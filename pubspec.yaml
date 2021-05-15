@@ -1,0 +1,16 @@
+name: synthatic_productions_code_gen
+description: Produces synthatic functions from a grammar
+version: 0.0.1
+author: João Victor Oliveira Couto
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  
+
+dev_dependencies:
+  test: ^1.17.4
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
