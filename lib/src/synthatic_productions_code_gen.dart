@@ -49,7 +49,8 @@ class PythonGenerator extends SynthaticCodeGenerator {
     final buffer = StringBuffer(signature);
     buffer.writeln(genFunctionDoc(name, productions));
 
-    buffer.writeln('\tnode = SynthaticNode()');
+    buffer.writeln("\tnode = SynthaticNode(production='$name')");
+    buffer.writeln("\tif not token_queue.peek():\n\t\treturn node");
     for (var index = 0; index < productions.length; index++) {
       final production = productions[index];
       final firstProduction = production[0];
