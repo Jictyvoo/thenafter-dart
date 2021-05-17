@@ -22,12 +22,7 @@ class PythonGenerator extends SynthaticCodeGenerator {
   }
 
   String genFunctionName(String productionName) {
-    return 'sp_' +
-        productionName
-            .toLowerCase()
-            .replaceAll(' ', '_')
-            .replaceAll('<', '')
-            .replaceAll('>', '');
+    return 'sp_' + sanitizeName(productionName);
   }
 
   String genFunctionDoc(String name, List<List<String>> productions) {
@@ -66,50 +61,43 @@ class PythonGenerator extends SynthaticCodeGenerator {
         );
         buffer.writeln('\t\tif temp and temp.is_not_empty():');
         buffer.writeln('\t\t\tnode.add(temp)');
-      } else {
-        buffer.writeln("if token_queue.peek() == $firstProduction:");
+      } else if (firstProduction.isNotEmpty) {
+        buffer.writeln("if token_queue.peek() == ${sanitizeTerminals(firstProduction)}:");
         buffer.writeln('\t\tnode.add(token_queue.remove())');
-
-        // Sub productions foreach
-        for (var subIndex = 1; subIndex < production.length; subIndex++) {
-          final subProduction = production[subIndex];
-          final subIsProduction = isProduction(subProduction);
-          if (subIsProduction) {
-            buffer.writeln(
-              "\t\tif predict(token_queue.peek(), '$subProduction'):",
-            );
-            buffer.writeln(
-              '\t\t\ttemp = ${genFunctionName(subProduction)}(token_queue, error_list)',
-            );
-            buffer.writeln('\t\t\tif temp and temp.is_not_empty():');
-            buffer.writeln('\t\t\t\tnode.add(temp)');
-          } else {
-            buffer.writeln("\t\tif token_queue.peek() == $subProduction:");
-            buffer.writeln('\t\t\tnode.add(token_queue.remove())');
-          }
-
-          // In case failed the predict, add error to list
-          var expectedTokens = '[$subProduction]';
-          if (subIsProduction) {
-            // TODO get all firsts for this production
-            expectedTokens = "['get all firsts for $subProduction "
-                "and put here later']";
-          }
+      } else {
+        buffer.writeln('se:\n\t\treturn node');
+      }
+      // Sub productions foreach
+      for (var subIndex = 1; subIndex < production.length; subIndex++) {
+        final subProduction = production[subIndex];
+        final subIsProduction = isProduction(subProduction);
+        if (subIsProduction) {
           buffer.writeln(
-            "\t\telse:\n\t\t\terror_list.append("
-            "SynthaticParseErrors"
-            "($expectedTokens, token_queue.peek())"
-            ")",
+            "\t\tif predict(token_queue.peek(), '$subProduction'):",
           );
+          buffer.writeln(
+            '\t\t\ttemp = ${genFunctionName(subProduction)}(token_queue, error_list)',
+          );
+          buffer.writeln('\t\t\tif temp and temp.is_not_empty():');
+          buffer.writeln('\t\t\t\tnode.add(temp)');
+        } else {
+          buffer.writeln("\t\tif token_queue.peek() == ${sanitizeTerminals(subProduction)}:");
+          buffer.writeln('\t\t\tnode.add(token_queue.remove())');
         }
 
-        /*
-        node.add(token_queue.remove())
-	      if token_queue.peek() == 'Identifier':
-
-        else:
-            error_list.append()
-        */
+        // In case failed the predict, add error to list
+        var expectedTokens = '[${sanitizeTerminals(subProduction)}]';
+        if (subIsProduction) {
+          // TODO get all firsts for this production
+          expectedTokens = "['get all firsts for $subProduction "
+              "and put here later']";
+        }
+        buffer.writeln(
+          "\t\telse:\n\t\t\terror_list.append("
+          "SynthaticParseErrors"
+          "($expectedTokens, token_queue.peek())"
+          ")",
+        );
       }
     }
 
