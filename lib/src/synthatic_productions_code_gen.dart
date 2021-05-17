@@ -37,7 +37,11 @@ class PythonGenerator extends SynthaticCodeGenerator {
     return buffer.toString();
   }
 
-  String buildFunction(String name, List<List<String>> productions) {
+  String buildFunction(
+    String name,
+    List<List<String>> productions,
+    Map<String, List<String>> firsts,
+  ) {
     final generalSignature = 'token_queue: Queue, '
         'error_list: list[SynthaticParseErrors]';
     final signature =
@@ -55,14 +59,17 @@ class PythonGenerator extends SynthaticCodeGenerator {
         buffer.write('el');
       }
       if (isProduction(firstProduction)) {
-        buffer.writeln("if predict(token_queue.peek(), '$firstProduction'):");
+        final firstSet = firsts[firstProduction] ?? [];
+        buffer.writeln(
+            "if token_queue.peek().get_lexeme() in ${listTerminalToString(firstSet)}:");
         buffer.writeln(
           '\t\ttemp = ${genFunctionName(firstProduction)}(token_queue, error_list)',
         );
         buffer.writeln('\t\tif temp and temp.is_not_empty():');
         buffer.writeln('\t\t\tnode.add(temp)');
       } else if (firstProduction.isNotEmpty) {
-        buffer.writeln("if token_queue.peek() == ${sanitizeTerminals(firstProduction)}:");
+        buffer.writeln(
+            "if token_queue.peek().get_lexeme() == ${sanitizeTerminals(firstProduction)}:");
         buffer.writeln('\t\tnode.add(token_queue.remove())');
       } else {
         buffer.writeln('se:\n\t\treturn node');
@@ -71,9 +78,10 @@ class PythonGenerator extends SynthaticCodeGenerator {
       for (var subIndex = 1; subIndex < production.length; subIndex++) {
         final subProduction = production[subIndex];
         final subIsProduction = isProduction(subProduction);
+        final firstSet = firsts[subProduction] ?? [];
         if (subIsProduction) {
           buffer.writeln(
-            "\t\tif predict(token_queue.peek(), '$subProduction'):",
+            "\t\tif token_queue.peek().get_lexeme() in ${listTerminalToString(firstSet)}:",
           );
           buffer.writeln(
             '\t\t\ttemp = ${genFunctionName(subProduction)}(token_queue, error_list)',
@@ -81,7 +89,8 @@ class PythonGenerator extends SynthaticCodeGenerator {
           buffer.writeln('\t\t\tif temp and temp.is_not_empty():');
           buffer.writeln('\t\t\t\tnode.add(temp)');
         } else {
-          buffer.writeln("\t\tif token_queue.peek() == ${sanitizeTerminals(subProduction)}:");
+          buffer.writeln(
+              "\t\tif token_queue.peek().get_lexeme() == ${sanitizeTerminals(subProduction)}:");
           buffer.writeln('\t\t\tnode.add(token_queue.remove())');
         }
 
@@ -89,8 +98,7 @@ class PythonGenerator extends SynthaticCodeGenerator {
         var expectedTokens = '[${sanitizeTerminals(subProduction)}]';
         if (subIsProduction) {
           // TODO get all firsts for this production
-          expectedTokens = "['get all firsts for $subProduction "
-              "and put here later']";
+          expectedTokens = listTerminalToString(firstSet);
         }
         buffer.writeln(
           "\t\telse:\n\t\t\terror_list.append("

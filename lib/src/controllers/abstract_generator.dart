@@ -11,6 +11,24 @@ abstract class SynthaticCodeGenerator {
     return toTest == "''" || toTest.isEmpty;
   }
 
+  String listTerminalToString(
+    List<String> terminals, [
+    String delimiter = ',',
+  ]) {
+    final buffer = StringBuffer();
+    var count = 0;
+    for (final word in terminals) {
+      if (word.isNotEmpty) {
+        if (count > 0) {
+          buffer.write(delimiter);
+        }
+        buffer.write("'$word'");
+        count++;
+      }
+    }
+    return '[${buffer.toString()}]';
+  }
+
   /// Must return a string with single quote
   String sanitizeTerminals(String original) {
     if (!original.startsWith("'")) {
