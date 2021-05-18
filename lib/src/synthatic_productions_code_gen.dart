@@ -65,6 +65,7 @@ class PythonGenerator extends SynthaticCodeGenerator {
   }
 
   String _buildVerifications(
+      final String firstProduction,
     final List<String> productionsList,
     final GivenInformation givenInformation,
     final Map<String, List<String>> firsts,
@@ -135,7 +136,7 @@ class PythonGenerator extends SynthaticCodeGenerator {
         buffer.writeln(
           "\t\telse:\n\t\t\terror_list.append("
           "SynthaticParseErrors"
-          "($expectedTokens, token_queue.peek())"
+          "('$firstProduction', $expectedTokens, token_queue.peek())"
           ")",
         );
       }
@@ -220,6 +221,7 @@ class PythonGenerator extends SynthaticCodeGenerator {
       final tabAmount = firstSet.contains('') ? 1 : 2;
       buffer.writeln(
         _buildVerifications(
+          name,
           production,
           givenInformation,
           firsts,
