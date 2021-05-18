@@ -12,13 +12,14 @@ abstract class SynthaticCodeGenerator {
   }
 
   String listTerminalToString(
-    List<String> terminals, [
+    List<String> terminals, {
     String delimiter = ',',
-  ]) {
+    List<String> excluded = const <String>[],
+  }) {
     final buffer = StringBuffer();
     var count = 0;
     for (final word in terminals) {
-      if (word.isNotEmpty) {
+      if (word.isNotEmpty && !excluded.contains(word)) {
         if (count > 0) {
           buffer.write(delimiter);
         }
