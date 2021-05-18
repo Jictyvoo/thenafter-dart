@@ -76,16 +76,18 @@ class PythonGenerator extends SynthaticCodeGenerator {
       }
 
       // In case failed the predict, add error to list
-      var expectedTokens = '[${sanitizeTerminals(production)}]';
-      if (subIsProduction) {
-        expectedTokens = localFirstSetName;
+      if (!firstSet.contains('')) {
+        var expectedTokens = '[${sanitizeTerminals(production)}]';
+        if (subIsProduction) {
+          expectedTokens = localFirstSetName;
+        }
+        buffer.writeln(
+          "\t\telse:\n\t\t\terror_list.append("
+          "SynthaticParseErrors"
+          "($expectedTokens, token_queue.peek())"
+          ")",
+        );
       }
-      buffer.writeln(
-        "\t\telse:\n\t\t\terror_list.append("
-        "SynthaticParseErrors"
-        "($expectedTokens, token_queue.peek())"
-        ")",
-      );
     }
     return buffer.toString();
   }
@@ -123,8 +125,8 @@ class PythonGenerator extends SynthaticCodeGenerator {
       if (index > 0) {
         buffer.write('el');
       }
+      final firstSet = firsts[firstProduction] ?? [];
       if (isProduction(firstProduction)) {
-        final firstSet = firsts[firstProduction] ?? [];
         buffer.writeln(
             "if token_queue.peek().get_lexeme() in ${listTerminalToString(firstSet)}:");
         buffer.writeln(
@@ -140,7 +142,8 @@ class PythonGenerator extends SynthaticCodeGenerator {
         buffer.writeln('se:\n\t\treturn node');
       }
       // Sub productions foreach
-      buffer.writeln(_buildVerifications(production, firsts, 2));
+      final tabAmount = firstSet.contains('') ? 1 : 2;
+      buffer.writeln(_buildVerifications(production, firsts, tabAmount));
     }
 
     buffer.writeln('\treturn node');
