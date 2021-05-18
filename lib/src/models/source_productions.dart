@@ -218,9 +218,9 @@ const SourceProductions = <String, List<List<String>>>{
       "start",
       "'('",
       "')'",
-      "'['",
+      "'{'",
       "<Func Block>",
-      "']'",
+      "'}'",
     ],
   ],
   "<Func Stms>": [
@@ -237,17 +237,17 @@ const SourceProductions = <String, List<List<String>>>{
       "struct",
       "id",
       "<Extends>",
-      "'['",
+      "'{'",
       "<Var Decls>",
-      "']'",
+      "'}'",
     ],
     [
       "typedef",
       "struct",
       "<Extends>",
-      "'['",
+      "'{'",
       "<Var Decls>",
-      "']'",
+      "'}'",
       "id",
       "';'",
     ],
@@ -295,9 +295,9 @@ const SourceProductions = <String, List<List<String>>>{
   "<Var Block>": [
     [
       "var",
-      "'['",
+      "'{'",
       "<Var Decls>",
-      "']'",
+      "'}'",
     ],
     [
       "",
@@ -359,9 +359,9 @@ const SourceProductions = <String, List<List<String>>>{
   "<Const Block>": [
     [
       "const",
-      "'['",
+      "'{'",
       "<Const Decls>",
-      "']'",
+      "'}'",
     ],
     [
       "",
@@ -374,9 +374,9 @@ const SourceProductions = <String, List<List<String>>>{
       "'('",
       "<Params>",
       "')'",
-      "'['",
+      "'{'",
       "<Func Block>",
-      "']'",
+      "'}'",
     ],
   ],
   "<Decl Atribute>": [
@@ -428,9 +428,9 @@ const SourceProductions = <String, List<List<String>>>{
   ],
   "<Func Normal Stm>": [
     [
-      "'['",
+      "'{'",
       "<Func Stms>",
-      "']'",
+      "'}'",
     ],
     [
       "<Var Stm>",
@@ -674,9 +674,9 @@ const SourceProductions = <String, List<List<String>>>{
       "'('",
       "<Params>",
       "')'",
-      "'['",
+      "'{'",
       "<Func Block>",
-      "']'",
+      "'}'",
     ],
   ],
   "<Param Arrays>": [
