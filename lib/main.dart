@@ -11,10 +11,12 @@ void main() {
   final generator = PythonGenerator();
   final fileBuffer = StringBuffer();
   final givenInfo = GivenInformation(<String, String>{
-    'id': 'TokenTypes.IDENTIFIER',
-    'num': 'TokenTypes.NUMBER',
-    'str': 'TokenTypes.STRING',
-    'log': 'TokenTypes.RESERVED_WORD',
+    'Identifier': 'TokenTypes.IDENTIFIER',
+    'DecLiteral': 'TokenTypes.NUMBER',
+    'OctLiteral': 'TokenTypes.NUMBER',
+    'HexLiteral': 'TokenTypes.NUMBER',
+    'FloatLiteral': 'TokenTypes.NUMBER',
+    'StringLiteral': 'TokenTypes.STRING',
   });
   generator.buildNeededImports(fileBuffer);
   generator.buildTypeDeclarations(fileBuffer);

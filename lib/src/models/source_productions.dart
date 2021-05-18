@@ -1,858 +1,356 @@
 const SourceProductions = <String, List<List<String>>>{
-  "<Log Or_>": [
-    [
-      "'||'",
-      "<Log And>",
-      "<Log Or_>",
-    ],
-    [
-      "",
-    ],
+  "<Logical Denied>": [
+    ["'!'", "Identifier"],
+    ["'!'", "<Boolean Literal>"],
+    ["'!'", "<Logical Expression>"],
+    ["'!'", "<Relational Expression>"]
   ],
-  "<Params List>": [
-    [
-      "','",
-      "<Param>",
-      "<Params List>",
-    ],
-    [
-      "",
-    ],
+  "<Body Procedure>": [
+    ["<Body Item Procedure>", "<Body Procedure>"],
+    [""]
   ],
-  "<Array Decl>": [
-    [
-      "'['",
-      "<Array Def>",
-      "']'",
-      "<Array Vector>",
-    ],
+  "<Function Call>": [
+    ["Identifier", "'('", "<Formal Parameter List>", "')'"]
   ],
-  "<Param Type>": [
+  "<Value_assigned_matrix>": [
+    ["<Value>", "','", "<Value_assigned_matrix>"],
+    ["<Value>"]
+  ],
+  "<Number>": [
+    ["DecLiteral"],
+    ["OctLiteral"],
+    ["HexLiteral"],
+    ["FloatLiteral"]
+  ],
+  "<Logical Expression>": [
+    ["<Expression Value Logical>", "<Logical>"],
+    ["<Logical Denied>"]
+  ],
+  "<Global Decl>": [
+    ["<Const Decl>"],
+    ["<Var Decl>"],
+    ["<Const Decl>", "<Var Decl>"],
+    ["<Var Decl>", "<Const Decl>"],
+    [""]
+  ],
+  "<Else Procedure>": [
+    ["'else'", "'{'", "<Body Procedure>", "'}'"],
+    [""]
+  ],
+  "<Term>": [
+    ["<Expression Value>", "<Mult Exp>"]
+  ],
+  "<Type>": [
+    ["int"],
+    ["real"],
+    ["boolean"],
+    ["string"],
+    ["struct", "Identifier"],
+    ["Identifier"]
+  ],
+  "<Typedef Decl>": [
+    ["typedef", "<Base>", "Identifier", "';'"]
+  ],
+  "<Relational>": [
+    ["'>'", "<Exp>"],
+    ["'<'", "<Exp>"],
+    ["'<='", "<Exp>"],
+    ["'>='", "<Exp>"],
+    ["'=='", "<Exp>"],
+    ["'!='", "<Exp>"]
+  ],
+  "<Function Declaration>": [
     [
+      "'function'",
       "<Type>",
-    ],
-    [
-      "id",
-    ],
+      "Identifier",
+      "'('",
+      "<Params>",
+      "')'",
+      "'{'",
+      "<Body>",
+      "'}'"
+    ]
   ],
-  "<Add>": [
-    [
-      "<Mult>",
-      "<Add_>",
-    ],
+  "<Body Item Procedure>": [
+    ["<Var Decl>"],
+    ["<While Procedure>"],
+    ["<If Procedure>"],
+    ["<Read>"],
+    ["<Print>"],
+    ["<Assign>"]
   ],
-  "<Args List>": [
-    [
-      "','",
-      "<Expr>",
-      "<Args List>",
-    ],
-    [
-      "",
-    ],
+  "<Relational Expression>": [
+    ["<Exp>", "<Relational>"]
   ],
-  "<Array Def>": [
-    [
-      "<Expr>",
-      "<Array Expr>",
-    ],
+  "<If>": [
+    ["'if'", "'('", "<Conditional Expression>", "<Then>"]
   ],
-  "<Var Decls>": [
-    [
-      "<Var Decl>",
-      "<Var Decls>",
-    ],
-    [
-      "",
-    ],
+  "<Else>": [
+    ["'else'", "'{'", "<Body>", "'}'"],
+    [""]
   ],
-  "<Equate_>": [
-    [
-      "'=='",
-      "<Compare>",
-      "<Equate_>",
-    ],
-    [
-      "'!='",
-      "<Compare>",
-      "<Equate_>",
-    ],
-    [
-      "",
-    ],
+  "<ConstList>": [
+    ["<Type>", "<Const>", "<ConstList>"],
+    [""]
+  ],
+  "<Struct Decl>": [
+    ["struct", "Identifier", "<Extends>", "'{'", "<VariablesList>", "'}'"]
+  ],
+  "<Assignment_vector_aux2>": [
+    ["'='", "'{'", "<Value_assigned_vector>", "'}'"]
   ],
   "<Extends>": [
-    [
-      "extends",
-      "struct",
-      "id",
-    ],
-    [
-      "",
-    ],
+    ["'extends'", "Identifier"],
+    [""]
   ],
-  "<Const Decls>": [
-    [
-      "<Const Decl>",
-      "<Const Decls>",
-    ],
-    [
-      "",
-    ],
+  "<PrefixGlobalLocal>": [
+    ["'global'", "'.'"],
+    ["'local'", "'.'"]
+  ],
+  "<Read>": [
+    ["read", "'('", "<Formal Parameter List Read>", "')'", "';'"]
   ],
   "<Value>": [
-    [
-      "'-'",
-      "<Value>",
-    ],
-    [
-      "num",
-    ],
-    [
-      "str",
-    ],
-    [
-      "log",
-    ],
-    [
-      "local",
-      "<Access>",
-    ],
-    [
-      "global",
-      "<Access>",
-    ],
-    [
-      "id",
-      "<Id Value>",
-    ],
-    [
-      "'('",
-      "<Expr>",
-      "')'",
-    ],
+    ["<Number>"],
+    ["<Boolean Literal>"],
+    ["StringLiteral"]
   ],
-  "<Log Unary>": [
-    [
-      "'!'",
-      "<Log Unary>",
-    ],
-    [
-      "<Log Value>",
-    ],
-  ],
-  "<Decls>": [
-    [
-      "<Decl>",
-      "<Decls>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Index>": [
-    [
-      "<Expr>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<And_>": [
-    [
-      "'&&'",
-      "<Equate>",
-      "<And_>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Const Decl>": [
-    [
-      "<Type>",
-      "<Const>",
-      "<Const List>",
-    ],
-    [
-      "<Typedef>",
-    ],
-    [
-      "<Stm Scope>",
-    ],
-    [
-      "id",
-      "<Const Id>",
-    ],
-  ],
-  "<Accesses>": [
-    [
-      "<Access>",
-      "<Accesses>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Param>": [
-    [
-      "<Param Type>",
-      "id",
-      "<Param Arrays>",
-    ],
-  ],
-  "<Var>": [
-    [
-      "id",
-      "<Arrays>",
-    ],
-  ],
-  "<Func Block>": [
-    [
-      "<Var Block>",
-      "<Func Stms>",
-    ],
-  ],
-  "<Start Block>": [
-    [
-      "start",
-      "'('",
-      "')'",
-      "'{'",
-      "<Func Block>",
-      "'}'",
-    ],
-  ],
-  "<Func Stms>": [
-    [
-      "<Func Stm>",
-      "<Func Stms>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Struct Block>": [
-    [
-      "struct",
-      "id",
-      "<Extends>",
-      "'{'",
-      "<Var Decls>",
-      "'}'",
-    ],
-    [
-      "typedef",
-      "struct",
-      "<Extends>",
-      "'{'",
-      "<Var Decls>",
-      "'}'",
-      "id",
-      "';'",
-    ],
-  ],
-  "<Stm Id>": [
-    [
-      "<Assign>",
-    ],
-    [
-      "<Array>",
-      "<Arrays>",
-      "<Accesses>",
-      "<Assign>",
-    ],
-    [
-      "<Access>",
-      "<Accesses>",
-      "<Assign>",
-    ],
-    [
-      "'('",
-      "<Args>",
-      "')'",
-      "';'",
-    ],
-  ],
-  "<Array>": [
-    [
-      "'['",
-      "<Index>",
-      "']'",
-    ],
-  ],
-  "<Decl>": [
-    [
-      "<Func Decl>",
-    ],
-    [
-      "<Proc Decl>",
-    ],
-    [
-      "<Struct Block>",
-    ],
-  ],
-  "<Var Block>": [
-    [
-      "var",
-      "'{'",
-      "<Var Decls>",
-      "'}'",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Array Expr>": [
-    [
-      "','",
-      "<Array Def>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Arrays>": [
-    [
-      "<Array>",
-      "<Arrays>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Access>": [
-    [
-      "'.'",
-      "id",
-      "<Arrays>",
-    ],
-  ],
-  "<Stm Cmd>": [
-    [
-      "print",
-      "'('",
-      "<Args>",
-      "')'",
-      "';'",
-    ],
-    [
-      "read",
-      "'('",
-      "<Args>",
-      "')'",
-      "';'",
-    ],
-  ],
-  "<Var Stm>": [
-    [
-      "<Stm Scope>",
-    ],
-    [
-      "id",
-      "<Stm Id>",
-    ],
-    [
-      "<Stm Cmd>",
-    ],
-  ],
-  "<Const Block>": [
-    [
-      "const",
-      "'{'",
-      "<Const Decls>",
-      "'}'",
-    ],
-    [
-      "",
-    ],
+  "<Params>": [
+    ["<Param>", "','", "<Params>"],
+    ["<Param>"],
+    [""]
   ],
   "<Proc Decl>": [
     [
-      "procedure",
-      "id",
+      "'procedure'",
+      "Identifier",
       "'('",
       "<Params>",
       "')'",
       "'{'",
-      "<Func Block>",
-      "'}'",
-    ],
-  ],
-  "<Decl Atribute>": [
-    [
-      "<Array Decl>",
+      "<Body Procedure>",
+      "'}'"
     ],
     [
-      "<Expr>",
-    ],
-  ],
-  "<Compare_>": [
-    [
-      "'<'",
-      "<Add>",
-      "<Compare_>",
-    ],
-    [
-      "'>'",
-      "<Add>",
-      "<Compare_>",
-    ],
-    [
-      "'<='",
-      "<Add>",
-      "<Compare_>",
-    ],
-    [
-      "'>='",
-      "<Add>",
-      "<Compare_>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Stm Scope>": [
-    [
-      "local",
-      "<Access>",
-      "<Accesses>",
-      "<Assign>",
-    ],
-    [
-      "global",
-      "<Access>",
-      "<Accesses>",
-      "<Assign>",
-    ],
-  ],
-  "<Func Normal Stm>": [
-    [
-      "'{'",
-      "<Func Stms>",
-      "'}'",
-    ],
-    [
-      "<Var Stm>",
-    ],
-    [
-      "return",
-      "<Expr>",
-      "';'",
-    ],
-  ],
-  "<Else Stm>": [
-    [
-      "else",
-      "<Func Normal Stm>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Log Compare>": [
-    [
-      "<Log Unary>",
-      "<Log Compare_>",
-    ],
-  ],
-  "<Var Decl>": [
-    [
-      "<Type>",
-      "<Var>",
-      "<Var List>",
-      "';'",
-    ],
-    [
-      "<Typedef>",
-    ],
-    [
-      "<Stm Scope>",
-    ],
-    [
-      "id",
-      "<Var Id>",
-    ],
-  ],
-  "<Const>": [
-    [
-      "id",
-      "<Arrays>",
-    ],
-  ],
-  "<Const List>": [
-    [
-      "','",
-      "<Const>",
-      "<Const List>",
-    ],
-    [
-      "'='",
-      "<Decl Atribute>",
-      "';'",
-    ],
-  ],
-  "<Var List>": [
-    [
-      "','",
-      "<Var>",
-      "<Var List>",
-    ],
-    [
-      "'='",
-      "<Expr>",
-      "<Var List>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Array Vector>": [
-    [
-      "','",
-      "<Array Decl>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Type>": [
-    [
-      "int",
-    ],
-    [
-      "real",
-    ],
-    [
-      "boolean",
-    ],
-    [
-      "string",
-    ],
-    [
-      "struct",
-      "id",
-    ],
-  ],
-  "<Log Or>": [
-    [
-      "<Log And>",
-      "<Log Or_>",
-    ],
-  ],
-  "<Log Value>": [
-    [
-      "num",
-    ],
-    [
-      "str",
-    ],
-    [
-      "log",
-    ],
-    [
-      "local",
-      "<Access>",
-    ],
-    [
-      "global",
-      "<Access>",
-    ],
-    [
-      "id",
-      "<Id Value>",
-    ],
-    [
+      "Identifier",
       "'('",
-      "<Log Expr>",
+      "<Formal Parameter List>",
       "')'",
-    ],
+      "'{'",
+      "<Body Procedure>",
+      "'}'"
+    ]
   ],
-  "<Log Compare_>": [
-    [
-      "'<'",
-      "<Log Unary>",
-      "<Log Compare_>",
-    ],
-    [
-      "'>'",
-      "<Log Unary>",
-      "<Log Compare_>",
-    ],
-    [
-      "'<='",
-      "<Log Unary>",
-      "<Log Compare_>",
-    ],
-    [
-      "'>='",
-      "<Log Unary>",
-      "<Log Compare_>",
-    ],
-    [
-      "",
-    ],
+  "<Assignment_vector>": [
+    ["<Assignment_vector_aux1>"],
+    ["<Assignment_vector_aux2>"],
+    [""]
+  ],
+  "<VariablesList>": [
+    ["<Type>", "<Variable>", "<VariablesList>"],
+    [""]
+  ],
+  "<Assignment_matrix_aux1>": [
+    ["<Assignment_vector_aux1>"]
+  ],
+  "<Body Item>": [
+    ["<Var Decl>"],
+    ["<While>"],
+    ["<If>"],
+    ["<Read>"],
+    ["<Print>"],
+    ["<Assign>"],
+    ["<Return Statement>"]
+  ],
+  "<Vector>": [
+    ["'['", "<Index>", "']'"]
+  ],
+  "<Body>": [
+    ["<Body Item>", "<Body>"],
+    [""]
+  ],
+  "<Decls>": [
+    ["<Decl>", "<Decls>"],
+    [""]
+  ],
+  "<Const Decl>": [
+    ["'const'", "'{'", "<ConstList>", "'}'"]
+  ],
+  "<Expression Value Logical>": [
+    ["Identifier"],
+    ["<Boolean Literal>"],
+    ["StringLiteral"],
+    ["<Function Call>"],
+    ["<Relational Expression>"]
+  ],
+  "<Logical>": [
+    ["<Conditional Operator>", "<Expression Value Logical>"],
+    ["<Conditional Operator>", "<Logical Denied>"]
+  ],
+  "<Decl>": [
+    ["<Function Declaration>"],
+    ["<Proc Decl>"],
+    ["<Struct Decl>"],
+    ["<Typedef Decl>"]
+  ],
+  "<Assignment_matrix>": [
+    ["<Assignment_matrix_aux1>"],
+    ["<Assignment_matrix_aux2>"],
+    [""]
+  ],
+  "<Return Statement>": [
+    ["'return'", "';'"],
+    ["'return'", "<Assign>"]
+  ],
+  "<Aux>": [
+    ["'='", "<Value>", "<Delimiter Var>"],
+    ["<Delimiter Var>"],
+    ["<Vector>", "<Assignment_vector>", "<Delimiter Var>"],
+    ["<Matrix>", "<Assignment_matrix>", "<Delimiter Var>"]
+  ],
+  "<Add Exp>": [
+    ["'+'", "<Exp>"],
+    ["'-'", "<Exp>"],
+    [""]
+  ],
+  "<Base>": [
+    ["<Type>"],
+    ["struct", "<Extends>", "'{'", "<VariablesList>", "'}'"],
+    ["<Struct Decl>"]
   ],
   "<Assign>": [
-    [
-      "'='",
-      "<Expr>",
-      "';'",
-    ],
-    [
-      "'++'",
-      "';'",
-    ],
-    [
-      "'--'",
-      "';'",
-    ],
+    ["<PrefixGlobalLocal>", "Identifier", "'='", "<Exp>", "';'"],
+    ["Identifier", "'='", "<Exp>", "';'"],
+    ["Identifier", "<Vector>", "<Assignment_vector>", "';'"],
+    ["Identifier", "<Matrix>", "<Assignment_matrix>", "';'"],
+    ["<Exp>", "';'"]
   ],
-  "<Log Equate>": [
-    [
-      "<Log Compare>",
-      "<Log Equate_>",
-    ],
+  "<Delimiter Var>": [
+    ["','", "<Variable>"],
+    ["';'"]
   ],
-  "<Args>": [
-    [
-      "<Expr>",
-      "<Args List>",
-    ],
-    [
-      "",
-    ],
+  "<Value_assigned_vector>": [
+    ["<Value>", "','", "<Value_assigned_vector>"],
+    ["<Value>"]
   ],
-  "<Log And_>": [
-    [
-      "'&&'",
-      "<Log Equate>",
-      "<Log And_>",
-    ],
-    [
-      "",
-    ],
+  "<Expression Value>": [
+    ["'-'", "<Expression Value>"],
+    ["Identifier"],
+    ["'('", "<Exp>", "')'"],
+    ["<Number>"],
+    ["<Boolean Literal>"],
+    ["StringLiteral"],
+    ["<Function Call>"]
   ],
-  "<Or>": [
-    [
-      "<And>",
-      "<Or_>",
-    ],
+  "<Conditional Expression>": [
+    ["<Boolean Literal>"],
+    ["<Relational Expression>"],
+    ["<Logical Expression>"]
   ],
-  "<Id Value>": [
+  "<Mult Exp>": [
+    ["'*'", "<Term>"],
+    ["'/'", "<Term>"],
+    [""]
+  ],
+  "<Exp>": [
+    ["<PrefixGlobalLocal>", "<Term>", "<Add Exp>"],
+    ["<Term>", "<Add Exp>"]
+  ],
+  "<Formal Parameter List Read>": [
+    ["Identifier"],
+    ["<Formal Parameter List Read>", "','", "Identifier"]
+  ],
+  "<Var Decl>": [
+    ["'var'", "'{'", "<VariablesList>", "'}'"]
+  ],
+  "<Assignment_vector_aux1>": [
+    ["'='", "<Value>"]
+  ],
+  "<Index>": [
+    ["DecLiteral", "OctLiteral", "Identifier"]
+  ],
+  "<Boolean Literal>": [
+    ["'true'"],
+    ["'false'"]
+  ],
+  "<Const>": [
+    ["Identifier", "'='", "<Value>", "<Delimiter Const>"]
+  ],
+  "<Conditional Operator>": [
+    ["'&&'"],
+    ["'||'"]
+  ],
+  "<While Procedure>": [
     [
-      "<Arrays>",
-      "<Accesses>",
-    ],
-    [
+      "'while'",
       "'('",
-      "<Args>",
-      "')'",
-    ],
-  ],
-  "<Or_>": [
-    [
-      "'||'",
-      "<And>",
-      "<Or_>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Log And>": [
-    [
-      "<Log Equate>",
-      "<Log And_>",
-    ],
-  ],
-  "<Func Decl>": [
-    [
-      "function",
-      "<Param Type>",
-      "id",
-      "'('",
-      "<Params>",
+      "<Conditional Expression>",
       "')'",
       "'{'",
-      "<Func Block>",
+      "<Body Procedure>",
+      "'}'"
+    ]
+  ],
+  "<Formal Parameter List>": [
+    ["<Exp>"],
+    ["<Exp>", "','", "<Formal Parameter List>"],
+    [""]
+  ],
+  "<Then Procedure>": [
+    ["')'", "'then'", "'{'", "<Body Procedure>", "'}'", "<Else Procedure>"]
+  ],
+  "<Start>": [
+    ["'start'", "'('", "')'", "'{'", "<Body Procedure>", "'}'", "<Decls>"]
+  ],
+  "<Print>": [
+    ["print", "'('", "<Formal Parameter List>", "')'", "';'"]
+  ],
+  "<Dimensao_matrix2>": [
+    ["','", "'{'", "<Value_assigned_matrix>", "'}'", "'}'"]
+  ],
+  "<If Procedure>": [
+    ["'if'", "'('", "<Conditional Expression>", "<Then Procedure>"]
+  ],
+  "<Then>": [
+    ["')'", "'then'", "'{'", "<Body>", "'}'", "<Else>"]
+  ],
+  "<Param>": [
+    ["const", "<Type>", "Identifier"],
+    ["<Type>", "Identifier"]
+  ],
+  "<Assignment_matrix_aux2>": [
+    [
+      "'='",
+      "'{'",
+      "'{'",
+      "<Value_assigned_matrix>",
       "'}'",
-    ],
+      "<Dimensao_matrix2>"
+    ]
   ],
-  "<Param Arrays>": [
+  "<While>": [
     [
-      "'['",
-      "']'",
-      "<Param Mult Arrays>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Param Mult Arrays>": [
-    [
-      "'['",
-      "num",
-      "']'",
-      "<Param Mult Arrays>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Unary>": [
-    [
-      "'!'",
-      "<Unary>",
-    ],
-    [
-      "<Value>",
-    ],
-  ],
-  "<Typedef>": [
-    [
-      "typedef",
-      "<Type>",
-      "id",
-      "';'",
-    ],
-  ],
-  "<Var Id>": [
-    [
-      "<Var>",
-      "<Var List>",
-      "';'",
-    ],
-    [
-      "<Stm Id>",
-    ],
-  ],
-  "<Mult_>": [
-    [
-      "'*'",
-      "<Unary>",
-      "<Mult_>",
-    ],
-    [
-      "'/'",
-      "<Unary>",
-      "<Mult_>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Expr>": [
-    [
-      "<Or>",
-    ],
-  ],
-  "<Params>": [
-    [
-      "<Param>",
-      "<Params List>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<And>": [
-    [
-      "<Equate>",
-      "<And_>",
-    ],
-  ],
-  "<Const Id>": [
-    [
-      "<Const>",
-      "<Const List>",
-      "';'",
-    ],
-    [
-      "<Stm Id>",
-    ],
-  ],
-  "<Add_>": [
-    [
-      "'+'",
-      "<Mult>",
-      "<Add_>",
-    ],
-    [
-      "'-'",
-      "<Mult>",
-      "<Add_>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Func Stm>": [
-    [
-      "if",
+      "'while'",
       "'('",
-      "<Log Expr>",
+      "<Conditional Expression>",
       "')'",
-      "then",
-      "<Func Normal Stm>",
-      "<Else Stm>",
-    ],
-    [
-      "while",
-      "'('",
-      "<Log Expr>",
-      "')'",
-      "<Func Stm>",
-    ],
-    [
-      "<Func Normal Stm>",
-    ],
+      "'{'",
+      "<Body>",
+      "'}'"
+    ]
   ],
-  "<Compare>": [
-    [
-      "<Add>",
-      "<Compare_>",
-    ],
+  "<Variable>": [
+    ["Identifier", "<Aux>"]
   ],
-  "<Equate>": [
-    [
-      "<Compare>",
-      "<Equate_>",
-    ],
-  ],
-  "<Log Equate_>": [
-    [
-      "'=='",
-      "<Log Compare>",
-      "<Log Equate_>",
-    ],
-    [
-      "'!='",
-      "<Log Compare>",
-      "<Log Equate_>",
-    ],
-    [
-      "",
-    ],
-  ],
-  "<Mult>": [
-    [
-      "<Unary>",
-      "<Mult_>",
-    ],
+  "<Delimiter Const>": [
+    ["','", "<Const>"],
+    ["';'"]
   ],
   "<Program>": [
-    [
-      "<Const Block>",
-      "<Var Block>",
-      "<Decls>",
-      "<Start Block>",
-      "<Decls>",
-    ],
+    ["<Global Decl>", "<Decls>", "<Start>"]
   ],
-  "<Log Expr>": [
-    [
-      "<Log Or>",
-    ],
-  ],
+  "<Matrix>": [
+    ["'['", "<Index>", "']'", "<Vector>"]
+  ]
 };
