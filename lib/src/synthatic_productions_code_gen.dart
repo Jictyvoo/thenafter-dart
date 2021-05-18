@@ -43,9 +43,10 @@ class PythonGenerator extends SynthaticCodeGenerator {
 
   String buildVerifyTokenTypes(
     List<String> listTerminals,
-    final GivenInformation givenInformation,
-  ) {
-    final buffer = StringBuffer('token_verification = ');
+    final GivenInformation givenInformation, [
+    final bool varDeclaration = true,
+  ]) {
+    final buffer = StringBuffer(varDeclaration ? 'token_verification = ' : '');
     final replacements = givenInformation.replaceVerifiers;
     var counter = 0;
     for (final terminal in listTerminals) {
@@ -104,7 +105,7 @@ class PythonGenerator extends SynthaticCodeGenerator {
           );
         }
         buffer.writeln(
-          "${tabsPlus[0]}if token_queue.peek().get_lexeme() in $localFirstSetName$tokenTypesCondition:",
+          "${tabsPlus[0]}if token_queue.peek() and token_queue.peek().get_lexeme() in $localFirstSetName$tokenTypesCondition:",
         );
         buffer.writeln(
           '${tabsPlus[1]}temp = ${genFunctionName(production)}(token_queue, error_list)',
@@ -112,7 +113,7 @@ class PythonGenerator extends SynthaticCodeGenerator {
         buffer.writeln('${tabsPlus[1]}if temp and temp.is_not_empty():');
         buffer.writeln('${tabsPlus[2]}node.add(temp)');
       } else {
-        buffer.write("${tabsPlus[0]}if token_queue.peek()");
+        buffer.write("${tabsPlus[0]}if token_queue.peek() and token_queue.peek()");
         if (givenInformation.replaceVerifiers.containsKey(production)) {
           buffer.writeln(
             '.get_token_type() == ${givenInformation.replaceVerifiers[production]}:',
@@ -167,23 +168,33 @@ class PythonGenerator extends SynthaticCodeGenerator {
     // Signature and general function declarations
     final excludedTerminals = givenInformation.replaceVerifiers.keys.toList();
     final buffer = _writeFunctionBegin(name, productions);
-
+    buffer.writeln(
+      '\ttemp_token_type = token_queue.peek().get_token_type()',
+    );
     // Start of analysing
     for (var index = 0; index < productions.length; index++) {
       final production = productions[index];
       final firstProduction = production[0];
       buffer.writeln('\t# Predicting for production ${production.toString()}');
+      final firstSet = firsts[firstProduction] ?? [];
+      final tokenTypesVerification = buildVerifyTokenTypes(
+        firstSet,
+        givenInformation,
+        false,
+      );
+      final tokenTypesCondition =
+          tokenTypesVerification.isNotEmpty ? ' or ${tokenTypesVerification}' : '';
+
       buffer.write('\t');
       if (index > 0) {
         buffer.write('el');
       }
-      final firstSet = firsts[firstProduction] ?? [];
       if (isProduction(firstProduction)) {
         buffer.writeln(
-          "if token_queue.peek().get_lexeme() in ${listTerminalToString(
+          "if token_queue.peek() and token_queue.peek().get_lexeme() in ${listTerminalToString(
             firstSet,
             excluded: excludedTerminals,
-          )}:",
+          )}$tokenTypesCondition:",
         );
         buffer.writeln(
           '\t\ttemp = ${genFunctionName(firstProduction)}(token_queue, error_list)',
@@ -191,7 +202,7 @@ class PythonGenerator extends SynthaticCodeGenerator {
         buffer.writeln('\t\tif temp and temp.is_not_empty():');
         buffer.writeln('\t\t\tnode.add(temp)');
       } else if (firstProduction.isNotEmpty) {
-        buffer.write("if token_queue.peek()");
+        buffer.write("if token_queue.peek() and token_queue.peek()");
         if (givenInformation.replaceVerifiers.containsKey(firstProduction)) {
           buffer.writeln(
             '.get_token_type() == ${givenInformation.replaceVerifiers[firstProduction]}:',
