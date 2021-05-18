@@ -1,5 +1,6 @@
 library synthatic_productions_code_gen;
 
+import 'package:synthatic_productions_code_gen/src/models/given_information.dart';
 import 'package:synthatic_productions_code_gen/src/util/helpers/string_helper.dart';
 
 import 'controllers/abstract_generator.dart';
@@ -13,7 +14,8 @@ class PythonGenerator extends SynthaticCodeGenerator {
       'from models.errors.synthatic_errors import SynthaticParseErrors',
     );
     buffer.writeln('from util.data_structure.queue import Queue');
-    buffer.writeln('from util.productions import EProduction\n');
+    buffer.writeln('from util.productions import EProduction');
+    buffer.writeln('from util.token_types import TokenTypes\n');
   }
 
   void buildTypeDeclarations(StringBuffer buffer) {
@@ -40,9 +42,10 @@ class PythonGenerator extends SynthaticCodeGenerator {
   }
 
   String _buildVerifications(
-    List<String> productionsList,
-    Map<String, List<String>> firsts,
-    int amountTabs,
+    final List<String> productionsList,
+    final GivenInformation givenInformation,
+    final Map<String, List<String>> firsts,
+    final int amountTabs,
   ) {
     final buffer = StringBuffer();
     for (var index = 1; index < productionsList.length; index++) {
@@ -69,9 +72,16 @@ class PythonGenerator extends SynthaticCodeGenerator {
         buffer.writeln('${tabsPlus[1]}if temp and temp.is_not_empty():');
         buffer.writeln('${tabsPlus[2]}node.add(temp)');
       } else {
-        buffer.writeln(
-          "${tabsPlus[0]}if token_queue.peek().get_lexeme() == ${sanitizeTerminals(production)}:",
-        );
+        buffer.write("${tabsPlus[0]}if token_queue.peek()");
+        if (givenInformation.replaceVerifiers.containsKey(production)) {
+          buffer.writeln(
+            '.get_token_type() == ${givenInformation.replaceVerifiers[production]}:',
+          );
+        } else {
+          buffer.writeln(
+            ".get_lexeme() == ${sanitizeTerminals(production)}:",
+          );
+        }
         buffer.writeln('${tabsPlus[1]}node.add(token_queue.remove())');
       }
 
@@ -112,6 +122,7 @@ class PythonGenerator extends SynthaticCodeGenerator {
     final String name,
     final List<List<String>> productions,
     final Map<String, List<String>> firsts,
+    final GivenInformation givenInformation,
   ) {
     // Signature and general function declarations
     final buffer = _writeFunctionBegin(name, productions);
@@ -128,22 +139,32 @@ class PythonGenerator extends SynthaticCodeGenerator {
       final firstSet = firsts[firstProduction] ?? [];
       if (isProduction(firstProduction)) {
         buffer.writeln(
-            "if token_queue.peek().get_lexeme() in ${listTerminalToString(firstSet)}:");
+          "if token_queue.peek().get_lexeme() in ${listTerminalToString(firstSet)}:",
+        );
         buffer.writeln(
           '\t\ttemp = ${genFunctionName(firstProduction)}(token_queue, error_list)',
         );
         buffer.writeln('\t\tif temp and temp.is_not_empty():');
         buffer.writeln('\t\t\tnode.add(temp)');
       } else if (firstProduction.isNotEmpty) {
-        buffer.writeln(
-            "if token_queue.peek().get_lexeme() == ${sanitizeTerminals(firstProduction)}:");
+        buffer.write("if token_queue.peek()");
+        if (givenInformation.replaceVerifiers.containsKey(firstProduction)) {
+          buffer.writeln(
+            '.get_token_type() == ${givenInformation.replaceVerifiers[firstProduction]}:',
+          );
+        } else {
+          buffer.writeln(
+            ".get_lexeme() == ${sanitizeTerminals(firstProduction)}:",
+          );
+        }
         buffer.writeln('\t\tnode.add(token_queue.remove())');
       } else {
         buffer.writeln('se:\n\t\treturn node');
       }
       // Sub productions foreach
       final tabAmount = firstSet.contains('') ? 1 : 2;
-      buffer.writeln(_buildVerifications(production, firsts, tabAmount));
+      buffer.writeln(
+          _buildVerifications(production, givenInformation, firsts, tabAmount));
     }
 
     buffer.writeln('\treturn node');
