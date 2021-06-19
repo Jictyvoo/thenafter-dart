@@ -1,4 +1,4 @@
-abstract class SynthaticCodeGenerator {
+abstract class AbstractProductionAnalyzer {
   bool _isLower(int charCode) {
     return charCode >= 97 && charCode <= 122;
   }
@@ -32,6 +32,9 @@ abstract class SynthaticCodeGenerator {
 
   /// Must return a string with single quote
   String sanitizeTerminals(String original) {
+    if (original == "'" || original.isEmpty) {
+      return "'$original'";
+    }
     if (!original.startsWith("'")) {
       original = "'" + original;
     }

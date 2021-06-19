@@ -3,10 +3,10 @@ library synthatic_productions_code_gen;
 import 'package:synthatic_productions_code_gen/src/models/given_information.dart';
 import 'package:synthatic_productions_code_gen/src/util/helpers/string_helper.dart';
 
-import 'controllers/abstract_generator.dart';
+import 'controllers/abstract_production_analyzer.dart';
 
 /// A PythonCodeGenerator.
-class PythonGenerator extends SynthaticCodeGenerator {
+class PythonGenerator extends AbstractProductionAnalyzer {
   void buildNeededImports(StringBuffer buffer) {
     buffer.writeln('from collections import Callable\n');
     buffer.writeln('from models.business.sythatic_node import SynthaticNode');
@@ -99,7 +99,7 @@ class PythonGenerator extends SynthaticCodeGenerator {
             tokenTypesVerification.isNotEmpty ? ' or token_verification' : '';
         if (tokenTypesVerification.isNotEmpty) {
           buffer.writeln(
-            '${tabsPlus[0]}temp_token_type = token_queue.peek().get_token_type()',
+            '${tabsPlus[0]}temp_token_type = token_queue.peek() and token_queue.peek().get_token_type()',
           );
           buffer.writeln(
             '${tabsPlus[0]}${tokenTypesVerification}',
