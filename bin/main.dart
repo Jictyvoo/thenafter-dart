@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:synthatic_productions_code_gen/src/controllers/first_follow/first_generator.dart';
 import 'package:synthatic_productions_code_gen/src/models/given_information.dart';
-import 'package:synthatic_productions_code_gen/src/models/source_firsts.dart';
-import 'package:synthatic_productions_code_gen/src/models/source_productions.dart';
-import 'package:synthatic_productions_code_gen/src/synthatic_productions_code_gen.dart';
+import 'package:synthatic_productions_code_gen/src/python_synthatic_generator.dart';
+
+import 'models/source_firsts.dart';
+import 'models/source_productions.dart';
 
 void main() {
   print(FirstGenerator().start(SourceProductions));
@@ -31,6 +32,6 @@ void main() {
     );
   }
 
-  final file = File('./synthatic_productions.py');
+  final file = File('./synthatic_productions.log');
   file.writeAsStringSync(fileBuffer.toString());
 }
