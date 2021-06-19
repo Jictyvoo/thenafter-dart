@@ -1,4 +1,4 @@
-abstract class AbstractProductionAnalyzer {
+abstract class AbstractAnalyzer {
   bool _isLower(int charCode) {
     return charCode >= 97 && charCode <= 122;
   }
@@ -9,6 +9,18 @@ abstract class AbstractProductionAnalyzer {
 
   bool valueIsEmpty(String toTest) {
     return toTest == "''" || toTest.isEmpty;
+  }
+
+  Set<String> joinSets(
+    Set<String> main,
+    Set<String> secondary,
+  ) {
+    for (final index in secondary) {
+      if (!valueIsEmpty(index)) {
+        main.add(index);
+      }
+    }
+    return main;
   }
 
   String listTerminalToString(

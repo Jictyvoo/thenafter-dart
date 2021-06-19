@@ -1,28 +1,16 @@
-import 'package:synthatic_productions_code_gen/src/controllers/abstract_production_analyzer.dart';
+import '../abstract_analyzer.dart';
 
-class FirstGenerator extends AbstractProductionAnalyzer {
-  Set<String> joinSets(
-    Set<String> main,
-    Set<String> secondary,
-  ) {
-    for (final index in secondary) {
-      if (!valueIsEmpty(index)) {
-        main.add(index);
-      }
-    }
-    return main;
-  }
-
-  Set<String> of(
+mixin FirstAnalyzer on AbstractAnalyzer {
+  Set<String> firstOf(
     String productionName,
     Map<String, List<List<String>>> allProductions,
-    Map<String, Set<String>> first,
+    Map<String, Set<String>> firstList,
   ) {
-    if (first.containsKey(productionName)) {
-      return first[productionName]!;
+    if (firstList.containsKey(productionName)) {
+      return firstList[productionName]!;
     }
     final firstSet = <String>{};
-    first[productionName] = firstSet;
+    firstList[productionName] = firstSet;
     if (!allProductions.containsKey(productionName)) {
       throw ('Production "$productionName" not defined');
     }
@@ -31,10 +19,10 @@ class FirstGenerator extends AbstractProductionAnalyzer {
         if (isProduction(production[count])) {
           // in case first element in allProductions is a sub-production,
           // it will get the first set of it
-          var firstOfSubProduction = of(
+          var firstOfSubProduction = firstOf(
             production[count],
             allProductions,
-            first,
+            firstList,
           );
           joinSets(firstSet, firstOfSubProduction);
           // if sub production doesn't have a empty first, stop loop
@@ -49,14 +37,6 @@ class FirstGenerator extends AbstractProductionAnalyzer {
       }
     }
 
-    return firstSet;
-  }
-
-  Map<String, Set<String>> start(Map<String, List<List<String>>> productions) {
-    final firstSet = <String, Set<String>>{};
-    for (final entry in productions.entries) {
-      of(entry.key, productions, firstSet);
-    }
     return firstSet;
   }
 }

@@ -1,14 +1,12 @@
 import 'dart:io';
 
-import 'package:synthatic_productions_code_gen/src/controllers/first_follow/first_generator.dart';
-import 'package:synthatic_productions_code_gen/src/models/given_information.dart';
-import 'package:synthatic_productions_code_gen/src/python_synthatic_generator.dart';
+import 'package:synthatic_productions_code_gen/synthatic_productions_code_gen.dart';
 
 import 'models/source_firsts.dart';
 import 'models/source_productions.dart';
 
 void main() {
-  print(FirstGenerator().start(SourceProductions));
+  print(FirstFollow().start(SourceProductions, '<Program>'));
   final generator = PythonGenerator();
   final fileBuffer = StringBuffer();
   final givenInfo = GivenInformation(<String, String>{
