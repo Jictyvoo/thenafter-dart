@@ -6,7 +6,9 @@ import 'models/source_firsts.dart';
 import 'models/source_productions.dart';
 
 void main() {
-  print(FirstFollow().start(SourceProductions, '<Program>'));
+  final result = FirstFollow().start(SourceProductions, '<Program>');
+  print(result.firstList);
+  print('\n${result.followList}');
   final generator = PythonGenerator();
   final fileBuffer = StringBuffer();
   final givenInfo = GivenInformation(<String, String>{
