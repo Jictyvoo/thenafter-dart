@@ -1,4 +1,5 @@
-import 'package:synthatic_productions_code_gen/src/controllers/abstract_analyzer.dart';
+import '../../util/types_util.dart';
+import '../abstract_analyzer.dart';
 
 mixin FollowAnalyzer on AbstractAnalyzer {
   Set<String> getFirst(String production, Map<String, Set<String>> firstList) {
@@ -23,10 +24,10 @@ mixin FollowAnalyzer on AbstractAnalyzer {
 
   Set<String> followOf(
     String productionName,
-    Map<String, List<List<String>>> allProductions, {
-    required Map<String, Set<String>> followList,
+    ProductionsMap allProductions, {
+    required ProductionTerminals followList,
     required Set<String> hasToo,
-    required Map<String, Set<String>> firstList,
+    required ProductionTerminals firstList,
     required Map<String, Set<String>> allProducers,
   }) {
     if (followList.containsKey(productionName)) {
@@ -40,7 +41,10 @@ mixin FollowAnalyzer on AbstractAnalyzer {
     for (final producedBy in allProducers[productionName] ?? <String>{}) {
       final producerProduction = allProductions[producedBy] ?? <List<String>>[];
       for (var counter = 0; counter < producerProduction.length; counter++) {
-        final index = getAheadSymbol(productionName, producerProduction[counter]);
+        final index = getAheadSymbol(
+          productionName,
+          producerProduction[counter],
+        );
         var getProducedByFollow = false;
         // print('$index $productionName ---> $producedBy ::= ${producerProduction[counter]}');
         if (index >= producerProduction[counter].length) {

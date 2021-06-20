@@ -1,13 +1,14 @@
 import 'package:synthatic_productions_code_gen/src/models/value/first_follow_result.dart';
 
+import '../util/types_util.dart';
 import 'abstract_analyzer.dart';
 import 'first_follow/first_analyzer.dart';
 import 'first_follow/follow_analyzer.dart';
 
 class FirstFollow extends AbstractAnalyzer with FirstAnalyzer, FollowAnalyzer {
   final Map<String, Set<String>> allProducers;
-  final Map<String, Set<String>> firstList;
-  final Map<String, Set<String>> followList;
+  final ProductionTerminals firstList;
+  final ProductionTerminals followList;
 
   FirstFollow()
       : allProducers = <String, Set<String>>{},
@@ -30,7 +31,7 @@ class FirstFollow extends AbstractAnalyzer with FirstAnalyzer, FollowAnalyzer {
   }
 
   FirstFollowResult start(
-    Map<String, List<List<String>>> productions, [
+    ProductionsMap productions, [
     String startSymbol = '',
   ]) {
     firstList.clear();

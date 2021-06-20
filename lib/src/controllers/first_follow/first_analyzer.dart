@@ -1,10 +1,11 @@
+import '../../util/types_util.dart';
 import '../abstract_analyzer.dart';
 
 mixin FirstAnalyzer on AbstractAnalyzer {
   Set<String> firstOf(
     String productionName,
-    Map<String, List<List<String>>> allProductions,
-    Map<String, Set<String>> firstList,
+    ProductionsMap allProductions,
+    ProductionTerminals firstList,
   ) {
     if (firstList.containsKey(productionName)) {
       return firstList[productionName]!;
