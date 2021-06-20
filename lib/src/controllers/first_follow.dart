@@ -1,4 +1,4 @@
-import 'package:synthatic_productions_code_gen/src/models/value/first_follow_result.dart';
+import 'package:thenafter_dart/src/models/value/first_follow_result.dart';
 
 import '../util/types_util.dart';
 import 'abstract_analyzer.dart';

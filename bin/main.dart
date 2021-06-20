@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:synthatic_productions_code_gen/synthatic_productions_code_gen.dart';
+import 'package:thenafter_dart/thenafter_dart.dart';
 
 import 'models/source_firsts.dart';
 import 'models/source_productions.dart';
