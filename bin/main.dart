@@ -11,14 +11,14 @@ void main() {
   print('\n${result.followList}');
   final generator = PythonGenerator();
   final fileBuffer = StringBuffer();
-  final givenInfo = GivenInformation(<String, String>{
+  final givenInfo = <String, String>{
     'Identifier': 'TokenTypes.IDENTIFIER',
     'DecLiteral': 'TokenTypes.NUMBER',
     'OctLiteral': 'TokenTypes.NUMBER',
     'HexLiteral': 'TokenTypes.NUMBER',
     'FloatLiteral': 'TokenTypes.NUMBER',
     'StringLiteral': 'TokenTypes.STRING',
-  });
+  };
   generator.buildNeededImports(fileBuffer);
   generator.buildTypeDeclarations(fileBuffer);
   for (final currentProduction in SourceProductions.entries) {

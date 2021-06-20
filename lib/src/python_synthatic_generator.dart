@@ -1,12 +1,14 @@
 library synthatic_productions_code_gen;
 
-import 'package:synthatic_productions_code_gen/src/models/given_information.dart';
-import 'package:synthatic_productions_code_gen/src/util/helpers/string_helper.dart';
-
 import 'controllers/abstract_analyzer.dart';
+import 'models/code_generator_interface.dart';
+import 'util/helpers/string_helper.dart';
+import 'util/types_util.dart';
 
 /// A PythonCodeGenerator.
-class PythonGenerator extends AbstractAnalyzer {
+class PythonGenerator extends AbstractAnalyzer
+    implements CodeGeneratorInterface {
+  @override
   void buildNeededImports(StringBuffer buffer) {
     buffer.writeln('from collections import Callable\n');
     buffer.writeln('from models.business.sythatic_node import SynthaticNode');
@@ -25,10 +27,12 @@ class PythonGenerator extends AbstractAnalyzer {
     );
   }
 
+  @override
   String genFunctionName(String productionName) {
     return 'sp_' + sanitizeName(productionName);
   }
 
+  @override
   String genFunctionDoc(String name, List<List<String>> productions) {
     final buffer = StringBuffer('\t"""\n');
     buffer.writeln('\tThis function parse tokens for production $name\\n');
@@ -47,7 +51,7 @@ class PythonGenerator extends AbstractAnalyzer {
     final bool varDeclaration = true,
   ]) {
     final buffer = StringBuffer(varDeclaration ? 'token_verification = ' : '');
-    final replacements = givenInformation.replaceVerifiers;
+    final replacements = givenInformation;
     var counter = 0;
     for (final terminal in listTerminals) {
       if (replacements.containsKey(terminal)) {
@@ -71,7 +75,7 @@ class PythonGenerator extends AbstractAnalyzer {
     final Map<String, List<String>> firsts,
     final int amountTabs,
   ) {
-    final excludedTerminals = givenInformation.replaceVerifiers.keys.toList();
+    final excludedTerminals = givenInformation.keys.toList();
     final buffer = StringBuffer();
     for (var index = 1; index < productionsList.length; index++) {
       final production = productionsList[index];
@@ -116,9 +120,9 @@ class PythonGenerator extends AbstractAnalyzer {
       } else {
         buffer.write(
             '${tabsPlus[0]}if token_queue.peek() and token_queue.peek()');
-        if (givenInformation.replaceVerifiers.containsKey(production)) {
+        if (givenInformation.containsKey(production)) {
           buffer.writeln(
-            '.get_token_type() == ${givenInformation.replaceVerifiers[production]}:',
+            '.get_token_type() == ${givenInformation[production]}:',
           );
         } else {
           buffer.writeln(
@@ -168,7 +172,7 @@ class PythonGenerator extends AbstractAnalyzer {
     final GivenInformation givenInformation,
   ) {
     // Signature and general function declarations
-    final excludedTerminals = givenInformation.replaceVerifiers.keys.toList();
+    final excludedTerminals = givenInformation.keys.toList();
     final buffer = _writeFunctionBegin(name, productions);
     buffer.writeln(
       '\ttemp_token_type = token_queue.peek().get_token_type()',
@@ -206,9 +210,9 @@ class PythonGenerator extends AbstractAnalyzer {
         buffer.writeln('\t\t\tnode.add(temp)');
       } else if (firstProduction.isNotEmpty) {
         buffer.write('if token_queue.peek() and token_queue.peek()');
-        if (givenInformation.replaceVerifiers.containsKey(firstProduction)) {
+        if (givenInformation.containsKey(firstProduction)) {
           buffer.writeln(
-            '.get_token_type() == ${givenInformation.replaceVerifiers[firstProduction]}:',
+            '.get_token_type() == ${givenInformation[firstProduction]}:',
           );
         } else {
           buffer.writeln(
