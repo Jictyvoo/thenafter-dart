@@ -1,10 +1,11 @@
 enum TokenType {
   terminal,
   genericTerminal,
+  attributionValue,
+  characterSet,
   production,
   operator,
   string,
-  sets,
   comment
 }
 

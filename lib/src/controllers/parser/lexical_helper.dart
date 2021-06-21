@@ -7,7 +7,8 @@ enum LexicalStates {
   operator,
   identifier,
   comment,
-  attribution
+  attribution,
+  characterSet
 }
 
 /// ASCII code for character `!`
@@ -36,6 +37,12 @@ const CHAR_BACK_SLASH = 92;
 
 /// ASCII code for character `|`
 const CHAR_VERTICAL_SLASH = 124;
+
+/// ASCII code for character `{`
+const CHAR_OPEN_BRACKETS = 123;
+
+/// ASCII code for character `}`
+const CHAR_CLOSE_BRACKETS = 125;
 
 /// Stores all information needed about lexeme construction and Lexical state
 class LexicalInformation {

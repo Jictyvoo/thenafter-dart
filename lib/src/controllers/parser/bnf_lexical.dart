@@ -22,6 +22,27 @@ class BNFLexical {
           character == CHAR_EQUAL) {
         _lexicalInformation.addCharacter(character);
         tokenList.add(_lexicalInformation.generateToken(TokenType.operator));
+      } else {
+        errorList.add(
+          'Malformed Operator '
+          '`${_lexicalInformation.generateToken(TokenType.operator)}`',
+        );
+      }
+    }
+  }
+
+  void _characterSetState(int character) {
+    if (StringHelper.isNewline(character)) {
+      errorList.add(
+        'Malformed CharacterSet '
+        '`${_lexicalInformation.generateToken(TokenType.characterSet)}`',
+      );
+    } else {
+      _lexicalInformation.addCharacter(character);
+      if (character == CHAR_CLOSE_BRACKETS) {
+        tokenList.add(
+          _lexicalInformation.generateToken(TokenType.characterSet),
+        );
       }
     }
   }
@@ -36,7 +57,9 @@ class BNFLexical {
 
   void _attributionState(int character) {
     if (StringHelper.isNewline(character)) {
-      tokenList.add(_lexicalInformation.generateToken(TokenType.sets));
+      tokenList.add(
+        _lexicalInformation.generateToken(TokenType.attributionValue),
+      );
     } else {
       _lexicalInformation.addCharacter(character);
     }
@@ -66,7 +89,8 @@ class BNFLexical {
     }
     if (StringHelper.isNewline(character)) {
       errorList.add(
-        'Malformed Production `${_lexicalInformation.generateToken(TokenType.production)}`',
+        'Malformed Production '
+        '`${_lexicalInformation.generateToken(TokenType.production)}`',
       );
     } else if (character == CHAR_GREATER_THAN) {
       tokenList.add(_lexicalInformation.generateToken(TokenType.production));
@@ -99,6 +123,8 @@ class BNFLexical {
         return _commentState(character);
       case LexicalStates.attribution:
         return _attributionState(character);
+      case LexicalStates.characterSet:
+        return _characterSetState(character);
       case LexicalStates.nil:
         return;
     }
@@ -106,6 +132,7 @@ class BNFLexical {
 
   List<Token> start(InputIterator input) {
     var previousCharacter = 0;
+    var resetPrevious = false;
     for (final character in input.iterateCharactersSync()) {
       _lexicalInformation.column += 1;
       if (_lexicalInformation.state == LexicalStates.nil) {
@@ -138,8 +165,20 @@ class BNFLexical {
           _lexicalInformation.state = LexicalStates.string;
         } else if (StringHelper.isAlphabetic(character) ||
             StringHelper.isUnderline(character)) {
+          // begin IDENTIFIER
           _lexicalInformation.addCharacter(character);
           _lexicalInformation.state = LexicalStates.identifier;
+        } else if (character == CHAR_OPEN_BRACKETS) {
+          // begin CHARACTER_SET
+          _lexicalInformation.addCharacter(character);
+          _lexicalInformation.state = LexicalStates.characterSet;
+        } else if (!StringHelper.isWhitespace(character) &&
+            !StringHelper.isNewline(character)) {
+          errorList.add(
+            'Unknown symbol '
+            '${_lexicalInformation.lineNumber}:${_lexicalInformation.column} '
+            '`${String.fromCharCode(character)}`',
+          );
         }
       } else {
         _delegateState(character, previousCharacter);
@@ -147,12 +186,18 @@ class BNFLexical {
       if (StringHelper.isNewline(character)) {
         _lexicalInformation.lineNumber += 1;
         _lexicalInformation.column = 0;
+        resetPrevious = true;
       }
       // In case line break was given with both end-line types,
       // it'll subtract the counter
       if (StringHelper.isCRLF(previousCharacter, character)) {
         _lexicalInformation.lineNumber -= 1;
       }
+      if (resetPrevious) {
+        previousCharacter = 0;
+        resetPrevious = false;
+      }
+
       previousCharacter = character;
     }
     return tokenList;
