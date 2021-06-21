@@ -1,3 +1,4 @@
+// Number
 const CHAR_0 = 48;
 const CHAR_9 = 57;
 

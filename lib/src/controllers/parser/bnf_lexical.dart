@@ -132,7 +132,6 @@ class BNFLexical {
 
   List<Token> start(InputIterator input) {
     var previousCharacter = 0;
-    var resetPrevious = false;
     for (final character in input.iterateCharactersSync()) {
       _lexicalInformation.column += 1;
       if (_lexicalInformation.state == LexicalStates.nil) {
@@ -183,19 +182,15 @@ class BNFLexical {
       } else {
         _delegateState(character, previousCharacter);
       }
-      if (StringHelper.isNewline(character)) {
-        _lexicalInformation.lineNumber += 1;
-        _lexicalInformation.column = 0;
-        resetPrevious = true;
-      }
-      // In case line break was given with both end-line types,
+      // In case line break was given with both end-line types ('\r\n'),
       // it'll subtract the counter
       if (StringHelper.isCRLF(previousCharacter, character)) {
         _lexicalInformation.lineNumber -= 1;
       }
-      if (resetPrevious) {
+      if (StringHelper.isNewline(character)) {
+        _lexicalInformation.lineNumber += 1;
+        _lexicalInformation.column = 0;
         previousCharacter = 0;
-        resetPrevious = false;
       }
 
       previousCharacter = character;
