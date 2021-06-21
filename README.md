@@ -1,10 +1,12 @@
-# synthatic_productions_code_gen
+# Thenafter - Dart
 
-Produces synthatic functions from a grammar
+The dart implementation of `thenafter`, a library that parses **BNF** `.grm` file and produces the first and follow sets.
+This implementation also generated synthatic functions from the grammar.
 
 ## Getting Started
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Dart projects.
+Import this library in your project, load file contents as you wish, then send a Iterable<int> to `BNFParser`
+
+## Future plans
+
+As this lib was build in dart, and don't use any additional dependencies, in the future is planned to publish this lib in JS compiled from dart code
