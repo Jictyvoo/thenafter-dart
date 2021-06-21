@@ -1,8 +1,6 @@
-abstract class AbstractAnalyzer {
-  bool _isLower(int charCode) {
-    return charCode >= 97 && charCode <= 122;
-  }
+import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
 
+abstract class AbstractAnalyzer {
   bool isProduction(String toTest) {
     return toTest.startsWith('<') && toTest.endsWith('>');
   }
@@ -60,15 +58,16 @@ abstract class AbstractAnalyzer {
     final buffer = StringBuffer();
     var lastCharacter = 0;
     for (var character in productionName.runes) {
-      if (character == 32) {
+      if (StringHelper.isWhitespace(character)) {
         buffer.write('_');
       } else if (character != 60 && character != 62) {
-        if (_isLower(lastCharacter) && !_isLower(character)) {
+        if (StringHelper.isLower(lastCharacter) &&
+            !StringHelper.isLower(character)) {
           buffer.write('_');
         }
-        if (allLower && !_isLower(character)) {
-          final temp = StringBuffer()..writeCharCode(character);
-          character = temp.toString().toLowerCase().codeUnitAt(0);
+        if (allLower && !StringHelper.isLower(character)) {
+          final temp = String.fromCharCode(character);
+          character = temp.toLowerCase().codeUnitAt(0);
         }
         buffer.writeCharCode(character);
       }

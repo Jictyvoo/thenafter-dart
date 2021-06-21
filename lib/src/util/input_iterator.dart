@@ -1,5 +1,9 @@
 abstract class InputIterator {
-  Iterable<String> iterateLines();
+  Future<Iterable<String>> iterateLines();
 
-  Iterable<int> iterateCharacters();
+  Iterable<String> iterateLinesSync();
+
+  Stream<int> iterateCharacters();
+
+  Iterable<int> iterateCharactersSync();
 }

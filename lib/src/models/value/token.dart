@@ -1,4 +1,12 @@
-enum TokenType { terminal, production, identifier, operator, string, sets }
+enum TokenType {
+  terminal,
+  genericTerminal,
+  production,
+  operator,
+  string,
+  sets,
+  comment
+}
 
 class Token {
   final String lexeme;
@@ -12,7 +20,7 @@ class Token {
 
   @override
   String toString() {
-    return '$lineNumber:$columnNumber - $lexeme<$tokenType>';
+    return '$lineNumber:$columnNumber `$lexeme` <$tokenType>';
   }
 
   @override
