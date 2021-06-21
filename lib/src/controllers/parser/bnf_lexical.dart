@@ -1,7 +1,7 @@
 import 'package:thenafter_dart/src/controllers/parser/lexical_helper.dart';
 import 'package:thenafter_dart/src/models/value/token.dart';
 import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
-import 'package:thenafter_dart/src/util/input_iterator.dart';
+import 'package:thenafter_dart/src/util/types_util.dart';
 
 class BNFLexical {
   final List<Token> tokenList;
@@ -132,7 +132,7 @@ class BNFLexical {
 
   List<Token> start(InputIterator input) {
     var previousCharacter = 0;
-    for (final character in input.iterateCharactersSync()) {
+    for (final character in input) {
       _lexicalInformation.column += 1;
       if (_lexicalInformation.state == LexicalStates.nil) {
         if (character == CHAR_LESS_THAN) {

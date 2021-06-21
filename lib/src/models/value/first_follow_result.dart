@@ -1,6 +1,8 @@
+import 'package:thenafter_dart/src/util/types_util.dart';
+
 class FirstFollowResult {
-  final Map<String, Set<String>> firstList;
-  final Map<String, Set<String>> followList;
+  final ProductionTerminals firstList;
+  final ProductionTerminals followList;
 
   FirstFollowResult(this.firstList, this.followList);
 }
