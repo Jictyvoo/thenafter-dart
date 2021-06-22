@@ -7,27 +7,27 @@ enum SyntacticState { nil, openedProduction, openedAttribution }
 class BNFSyntactic {
   final ProductionsMap productions;
   final Map<String, String> extraDefinitions;
-  SyntacticState state;
-  Token leftSideToken;
+  SyntacticState _state;
+  Token _leftSideToken;
 
   BNFSyntactic()
-      : state = SyntacticState.nil,
-        leftSideToken = Token.empty,
+      : _state = SyntacticState.nil,
+        _leftSideToken = Token.empty,
         extraDefinitions = <String, String>{},
         productions = <String, List<List<String>>>{};
 
   void _attributionState(Token token) {
-    final key = StringHelper.removeQuotes(leftSideToken.lexeme);
+    final key = StringHelper.removeQuotes(_leftSideToken.lexeme);
     final value = StringHelper.removeQuotes(token.lexeme);
     extraDefinitions[key] = value;
-    state = SyntacticState.nil;
+    _state = SyntacticState.nil;
   }
 
   void _productionState(Token previousToken, Token token) {
     final productionList =
-        productions[leftSideToken.lexeme] ?? <List<String>>[];
-    if (!productions.containsKey(leftSideToken.lexeme)) {
-      productions[leftSideToken.lexeme] = productionList;
+        productions[_leftSideToken.lexeme] ?? <List<String>>[];
+    if (!productions.containsKey(_leftSideToken.lexeme)) {
+      productions[_leftSideToken.lexeme] = productionList;
     }
     if (productionList.isEmpty) {
       productionList.add(<String>[]);
@@ -44,18 +44,19 @@ class BNFSyntactic {
         token.lexeme == '::=') {
       if (subProductions.isNotEmpty) {
         subProductions.removeLast();
-      } else {
-        // FIXME: Not working, empty productions don't have empty string
-        subProductions.add('""');
       }
-      leftSideToken = previousToken;
+      if (subProductions.isEmpty) {
+        // in case last production is empty, add a empty string
+        subProductions.add(Token.empty.lexeme);
+      }
+      _leftSideToken = previousToken;
     } else {
       subProductions.add(token.lexeme);
     }
   }
 
   void _delegateState(Token previousToken, Token token) {
-    switch (state) {
+    switch (_state) {
       case SyntacticState.openedProduction:
         return _productionState(previousToken, token);
       case SyntacticState.openedAttribution:
@@ -73,16 +74,16 @@ class BNFSyntactic {
         // Skip COMMENT to not mess with syntactic analysis
         continue iterateTokens;
       }
-      if (state == SyntacticState.nil) {
+      if (_state == SyntacticState.nil) {
         if (token.tokenType == TokenType.operator) {
-          leftSideToken = previousToken;
+          _leftSideToken = previousToken;
           if (token.lexeme == '=') {
-            state = SyntacticState.openedAttribution;
+            _state = SyntacticState.openedAttribution;
           } else if (token.lexeme == '::=') {
             if (previousToken.tokenType != TokenType.production) {
               throw ('$previousToken is not a production, please fix your grammar');
             }
-            state = SyntacticState.openedProduction;
+            _state = SyntacticState.openedProduction;
           }
         }
       } else {
