@@ -21,8 +21,8 @@ class FirstFollow extends AbstractAnalyzer with FirstAnalyzer, FollowAnalyzer {
     for (final symbolList in subProductions) {
       for (final symbol in symbolList) {
         if (symbol.tokenType == TokenType.production) {
-          final producer = allProducers[symbol] ?? <String>{};
-          if (!allProducers.containsKey(symbol)) {
+          final producer = allProducers[symbol.lexeme] ?? <String>{};
+          if (!allProducers.containsKey(symbol.lexeme)) {
             allProducers[symbol.lexeme] = producer;
           }
           producer.add(parentProduction);

@@ -4,7 +4,7 @@ import '../../util/types_util.dart';
 import '../abstract_analyzer.dart';
 
 mixin FollowAnalyzer on AbstractAnalyzer {
-  Set<String> getFirst(String production, ProductionTerminals firstList) {
+  SymbolSet getFirst(String production, ProductionTerminals firstList) {
     if (isProduction(production)) {
       return firstList[production] ?? <String>{};
     }
@@ -28,9 +28,9 @@ mixin FollowAnalyzer on AbstractAnalyzer {
     String productionName,
     ProductionsMap allProductions, {
     required ProductionTerminals followList,
-    required Set<String> hasToo,
+    required SymbolSet hasToo,
     required ProductionTerminals firstList,
-    required Map<String, Set<String>> allProducers,
+    required Map<String, SymbolSet> allProducers,
   }) {
     if (followList.containsKey(productionName)) {
       return followList[productionName]!;
@@ -48,7 +48,9 @@ mixin FollowAnalyzer on AbstractAnalyzer {
           producerProduction[counter],
         );
         var getProducedByFollow = false;
-        // print('$index $productionName ---> $producedBy ::= ${producerProduction[counter]}');
+        /*print(
+          '$index $productionName ---> $producedBy ::= ${producerProduction[counter]}',
+        );*/
         if (index >= producerProduction[counter].length) {
           getProducedByFollow = true;
         } else if (index > 0) {
