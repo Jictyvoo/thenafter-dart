@@ -1,8 +1,10 @@
+import 'package:thenafter_dart/src/models/value/token.dart';
+
 typedef GivenInformation = Map<String, String>;
-// TODO: Change type from String to Token
-typedef SubProductionsList = List<List<String>>;
+typedef SubProductionsList = List<List<Token>>;
 typedef ProductionsMap = Map<String, SubProductionsList>;
-typedef ProductionTerminals = Map<String, Set<String>>;
+typedef SymbolSet = Set<String>;
+typedef ProductionTerminals = Map<String, SymbolSet>;
 
 /// Iterator for input that receives character by character
 typedef InputIterator = Iterable<int>;

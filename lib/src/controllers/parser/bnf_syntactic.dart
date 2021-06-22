@@ -14,7 +14,7 @@ class BNFSyntactic {
       : _state = SyntacticState.nil,
         _leftSideToken = Token.empty,
         extraDefinitions = <String, String>{},
-        productions = <String, List<List<String>>>{};
+        productions = <String, List<List<Token>>>{};
 
   void _attributionState(Token token) {
     final key = StringHelper.removeQuotes(_leftSideToken.lexeme);
@@ -25,19 +25,19 @@ class BNFSyntactic {
 
   void _productionState(Token previousToken, Token token) {
     final productionList =
-        productions[_leftSideToken.lexeme] ?? <List<String>>[];
+        productions[_leftSideToken.lexeme] ?? <List<Token>>[];
     if (!productions.containsKey(_leftSideToken.lexeme)) {
       productions[_leftSideToken.lexeme] = productionList;
     }
     if (productionList.isEmpty) {
-      productionList.add(<String>[]);
+      productionList.add(<Token>[]);
     }
     final subProductions = productionList.last;
     if (token.tokenType == TokenType.operator && token.lexeme == '|') {
-      productionList.add(<String>[]);
+      productionList.add(<Token>[]);
       if (subProductions.isEmpty) {
         // add empty production in case production is already empty
-        subProductions.add(Token.empty.lexeme);
+        subProductions.add(Token.empty);
       }
     } else if (previousToken.tokenType == TokenType.production &&
         token.tokenType == TokenType.operator &&
@@ -47,11 +47,11 @@ class BNFSyntactic {
       }
       if (subProductions.isEmpty) {
         // in case last production is empty, add a empty string
-        subProductions.add(Token.empty.lexeme);
+        subProductions.add(Token.empty);
       }
       _leftSideToken = previousToken;
     } else {
-      subProductions.add(token.lexeme);
+      subProductions.add(token);
     }
   }
 

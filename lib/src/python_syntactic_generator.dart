@@ -1,5 +1,7 @@
 library synthatic_productions_code_gen;
 
+import 'package:thenafter_dart/src/models/value/token.dart';
+
 import 'controllers/abstract_analyzer.dart';
 import 'models/code_generator_interface.dart';
 import 'util/helpers/string_helper.dart';
@@ -33,7 +35,7 @@ class PythonGenerator extends AbstractAnalyzer
   }
 
   @override
-  String genFunctionDoc(String name, List<List<String>> productions) {
+  String genFunctionDoc(String name, SubProductionsList productions) {
     final buffer = StringBuffer('\t"""\n');
     buffer.writeln('\tThis function parse tokens for production $name\\n');
     buffer.writeln('\tAccepted productions below\\n');
@@ -70,7 +72,7 @@ class PythonGenerator extends AbstractAnalyzer
 
   String _buildVerifications(
     final String firstProduction,
-    final List<String> productionsList,
+    final List<Token> productionsList,
     final GivenInformation givenInformation,
     final Map<String, Set<String>> firsts,
     final int amountTabs,
@@ -79,7 +81,7 @@ class PythonGenerator extends AbstractAnalyzer
     final buffer = StringBuffer();
     for (var index = 1; index < productionsList.length; index++) {
       final production = productionsList[index];
-      final subIsProduction = isProduction(production);
+      final subIsProduction = production.tokenType == TokenType.production;
       final firstSet = firsts[production] ?? <String>{};
       final tabsPlus = <String>[
         StringHelper.multiplyString('\t', amountTabs),
@@ -113,7 +115,7 @@ class PythonGenerator extends AbstractAnalyzer
           '${tabsPlus[0]}if token_queue.peek() and token_queue.peek().get_lexeme() in $localFirstSetName$tokenTypesCondition:',
         );
         buffer.writeln(
-          '${tabsPlus[1]}temp = ${genFunctionName(production)}(token_queue, error_list)',
+          '${tabsPlus[1]}temp = ${genFunctionName(production.lexeme)}(token_queue, error_list)',
         );
         buffer.writeln('${tabsPlus[1]}if temp and temp.is_not_empty():');
         buffer.writeln('${tabsPlus[2]}node.add(temp)');
@@ -126,7 +128,7 @@ class PythonGenerator extends AbstractAnalyzer
           );
         } else {
           buffer.writeln(
-            '.get_lexeme() == ${sanitizeTerminals(production)}:',
+            '.get_lexeme() == ${sanitizeTerminals(production.lexeme)}:',
           );
         }
         buffer.writeln('${tabsPlus[1]}node.add(token_queue.remove())');
@@ -134,7 +136,7 @@ class PythonGenerator extends AbstractAnalyzer
 
       // In case failed the predict, add error to list
       if (!firstSet.contains('')) {
-        var expectedTokens = '[${sanitizeTerminals(production)}]';
+        var expectedTokens = '[${sanitizeTerminals(production.lexeme)}]';
         if (subIsProduction) {
           expectedTokens = localFirstSetName;
         }
@@ -151,7 +153,7 @@ class PythonGenerator extends AbstractAnalyzer
 
   StringBuffer _writeFunctionBegin(
     final String name,
-    final List<List<String>> productions,
+    final SubProductionsList productions,
   ) {
     final generalSignature = 'token_queue: Queue, '
         'error_list: list[SynthaticParseErrors]';
@@ -167,7 +169,7 @@ class PythonGenerator extends AbstractAnalyzer
 
   String buildFunction(
     final String name,
-    final List<List<String>> productions,
+    final SubProductionsList productions,
     final Map<String, Set<String>> firsts,
     final GivenInformation givenInformation,
   ) {
@@ -196,7 +198,7 @@ class PythonGenerator extends AbstractAnalyzer
       if (index > 0) {
         buffer.write('el');
       }
-      if (isProduction(firstProduction)) {
+      if (firstProduction.tokenType == TokenType.production) {
         buffer.writeln(
           'if token_queue.peek() and token_queue.peek().get_lexeme() in ${listTerminalToString(
             firstSet,
@@ -204,11 +206,11 @@ class PythonGenerator extends AbstractAnalyzer
           )}$tokenTypesCondition:',
         );
         buffer.writeln(
-          '\t\ttemp = ${genFunctionName(firstProduction)}(token_queue, error_list)',
+          '\t\ttemp = ${genFunctionName(firstProduction.lexeme)}(token_queue, error_list)',
         );
         buffer.writeln('\t\tif temp and temp.is_not_empty():');
         buffer.writeln('\t\t\tnode.add(temp)');
-      } else if (firstProduction.isNotEmpty) {
+      } else if (firstProduction.lexeme.isNotEmpty) {
         buffer.write('if token_queue.peek() and token_queue.peek()');
         if (givenInformation.containsKey(firstProduction)) {
           buffer.writeln(
@@ -216,7 +218,7 @@ class PythonGenerator extends AbstractAnalyzer
           );
         } else {
           buffer.writeln(
-            '.get_lexeme() == ${sanitizeTerminals(firstProduction)}:',
+            '.get_lexeme() == ${sanitizeTerminals(firstProduction.lexeme)}:',
           );
         }
         buffer.writeln('\t\tnode.add(token_queue.remove())');

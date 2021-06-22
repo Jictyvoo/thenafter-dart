@@ -23,7 +23,7 @@ class GrammarInformation {
     String? about,
     this.caseSensitive = true,
     this.extraDefinitions = const <String, String>{},
-    this.productions = const <String, List<List<String>>>{},
+    this.productions = const <String, SubProductionsList>{},
   })  : author = author ?? 'Thenafter',
         name = name ?? 'Thenafter: Loaded.grm',
         version = version ?? 'v0.0.1',

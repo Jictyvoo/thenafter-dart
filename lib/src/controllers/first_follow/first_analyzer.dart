@@ -1,8 +1,10 @@
+import 'package:thenafter_dart/src/models/value/token.dart';
+
 import '../../util/types_util.dart';
 import '../abstract_analyzer.dart';
 
 mixin FirstAnalyzer on AbstractAnalyzer {
-  Set<String> firstOf(
+  SymbolSet firstOf(
     String productionName,
     ProductionsMap allProductions,
     ProductionTerminals firstList,
@@ -17,11 +19,11 @@ mixin FirstAnalyzer on AbstractAnalyzer {
     }
     for (final production in allProductions[productionName]!) {
       for (var count = 0; count < production.length; count += 1) {
-        if (isProduction(production[count])) {
+        if (production[count].tokenType == TokenType.production) {
           // in case first element in allProductions is a sub-production,
           // it will get the first set of it
           var firstOfSubProduction = firstOf(
-            production[count],
+            production[count].lexeme,
             allProductions,
             firstList,
           );
@@ -32,8 +34,10 @@ mixin FirstAnalyzer on AbstractAnalyzer {
           }
         } else {
           // if during the loop it gets a terminal symbol, add it to first set
-          // FIXME: When ProductionsMap type change to Token, verify "if (token.tokenType != TokenType.genericTerminal)"
-          firstSet.add(sanitizeTerminals(production[count]));
+          final token = production[count];
+          firstSet.add(token.tokenType != TokenType.genericTerminal
+              ? sanitizeTerminals(token.lexeme)
+              : token.lexeme);
           count = production.length + 1;
         }
       }

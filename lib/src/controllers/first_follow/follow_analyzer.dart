@@ -1,18 +1,20 @@
+import 'package:thenafter_dart/src/models/value/token.dart';
+
 import '../../util/types_util.dart';
 import '../abstract_analyzer.dart';
 
 mixin FollowAnalyzer on AbstractAnalyzer {
-  Set<String> getFirst(String production, Map<String, Set<String>> firstList) {
+  Set<String> getFirst(String production, ProductionTerminals firstList) {
     if (isProduction(production)) {
       return firstList[production] ?? <String>{};
     }
     return <String>{}..add(production);
   }
 
-  int getAheadSymbol(String lookingFor, List<String> searchIn) {
+  int getAheadSymbol(String lookingFor, List<Token> searchIn) {
     for (var index = 0; index < searchIn.length; index++) {
       final value = searchIn[index];
-      if (value == lookingFor) {
+      if (value.lexeme == lookingFor) {
         if (index + 1 < searchIn.length) {
           return index + 1;
         }
@@ -22,7 +24,7 @@ mixin FollowAnalyzer on AbstractAnalyzer {
     return -1;
   }
 
-  Set<String> followOf(
+  SymbolSet followOf(
     String productionName,
     ProductionsMap allProductions, {
     required ProductionTerminals followList,
@@ -39,7 +41,7 @@ mixin FollowAnalyzer on AbstractAnalyzer {
       throw ('Production $productionName is not used, please fix it');
     }
     for (final producedBy in allProducers[productionName] ?? <String>{}) {
-      final producerProduction = allProductions[producedBy] ?? <List<String>>[];
+      final producerProduction = allProductions[producedBy] ?? <List<Token>>[];
       for (var counter = 0; counter < producerProduction.length; counter++) {
         final index = getAheadSymbol(
           productionName,
@@ -51,7 +53,7 @@ mixin FollowAnalyzer on AbstractAnalyzer {
           getProducedByFollow = true;
         } else if (index > 0) {
           final aheadSymbol = producerProduction[counter][index];
-          final aheadFirstSet = getFirst(aheadSymbol, firstList);
+          final aheadFirstSet = getFirst(aheadSymbol.lexeme, firstList);
           joinSets(followSet, aheadFirstSet);
           if (aheadFirstSet.contains("''") || aheadFirstSet.contains('')) {
             getProducedByFollow = true;
