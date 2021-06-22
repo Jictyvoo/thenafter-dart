@@ -3,35 +3,39 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:thenafter_dart/thenafter_dart.dart';
 
+import 'util/args_types.dart';
 import 'util/syntactic_generator.dart';
 
 ArgParser _configureArgParser() {
   return ArgParser()
     ..addCommand(
-      'generate',
+      ArgsCommands.generated.value,
       ArgParser()
         ..addFlag(
-          'productions',
-          abbr: 'p',
+          GeneratedOptions.productions.value,
+          abbr: GeneratedOptions.productions.abbreviation,
           help: 'During code generation, '
               'generate productions representation from .grm file',
-          defaultsTo: true,
+          defaultsTo: false,
         )
         ..addOption(
-          'language',
-          abbr: 'l',
+          GeneratedOptions.language.value,
+          abbr: GeneratedOptions.language.abbreviation,
           help: 'Choose the output language for first, follow and productions',
           defaultsTo: 'v',
           mandatory: false,
-        )
-        ..addFlag(
-          'all',
-          abbr: 'a',
-          help: 'Parse all in current directory',
-          defaultsTo: false,
         ),
     )
-    ..addCommand('syntactic');
+    ..addCommand(ArgsCommands.syntactic.value);
+}
+
+ArgsCommands _stringToCommand(String? value) {
+  for (final command in ArgsCommands.values) {
+    if (command.value == value) {
+      return command;
+    }
+  }
+  return ArgsCommands.generated;
 }
 
 void main(List<String> args) {
@@ -53,8 +57,13 @@ void main(List<String> args) {
       'Finished in ${DateTime.now().difference(startTime).inMicroseconds} '
       'microseconds parse for file $fileName',
     );
-    final commandName = argResults.command?.name ?? 'generate';
-    if (commandName == 'generate') {
+    final commandName = _stringToCommand(argResults.command?.name);
+    if (commandName == ArgsCommands.generated) {
+      final generateProductions =
+          argResults.command?[GeneratedOptions.productions.value] ?? false;
+      final outputLanguage =
+          argResults.command?[GeneratedOptions.language.value] ?? 'v';
+      print('$generateProductions $outputLanguage');
       print('${result.firstList}\n\n${result.followList}');
     } else {
       generateSyntacticFile(parseResult, result);
