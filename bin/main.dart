@@ -2,13 +2,19 @@ import 'dart:io';
 
 import 'package:thenafter_dart/thenafter_dart.dart';
 
-import 'models/source_firsts.dart';
-import 'models/source_productions.dart';
-
 void main() {
-  final result = FirstFollow().start(SourceProductions, '<Program>');
-  print(result.firstList);
-  print('\n${result.followList}');
+  final startTime = DateTime.now();
+  final parseResult = BNFParser().start(
+    File('grammar.grm').readAsBytesSync(),
+  );
+  final result = FirstFollow().start(
+    parseResult.productions,
+    parseResult.startSymbol.lexeme,
+  );
+  print(
+    'Finished in ${DateTime.now().difference(startTime).inMicroseconds} microseconds',
+  );
+  //print('${result.firstList}\n\n${result.followList}');
   final generator = PythonGenerator();
   final fileBuffer = StringBuffer();
   final givenInfo = <String, String>{
@@ -21,12 +27,12 @@ void main() {
   };
   generator.buildNeededImports(fileBuffer);
   generator.buildTypeDeclarations(fileBuffer);
-  for (final currentProduction in SourceProductions.entries) {
+  for (final currentProduction in parseResult.productions.entries) {
     fileBuffer.writeln(
       generator.buildFunction(
         currentProduction.key,
         currentProduction.value,
-        SourceFirst,
+        result.firstList,
         givenInfo,
       ),
     );
