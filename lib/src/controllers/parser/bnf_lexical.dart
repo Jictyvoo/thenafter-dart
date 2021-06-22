@@ -1,5 +1,6 @@
 import 'package:thenafter_dart/src/controllers/parser/lexical_helper.dart';
 import 'package:thenafter_dart/src/models/value/token.dart';
+import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
@@ -196,5 +197,11 @@ class BNFLexical {
       previousCharacter = character;
     }
     return tokenList;
+  }
+
+  void clear() {
+    tokenList.clear();
+    errorList.clear();
+    _lexicalInformation.clear();
   }
 }

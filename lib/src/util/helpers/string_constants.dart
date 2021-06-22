@@ -1,3 +1,9 @@
+/// ASCII code for character `"`
+const CHAR_QUOTES = 34;
+
+/// ASCII code for character `'`
+const CHAR_SINGLE_QUOTE = 39;
+
 // Number
 const CHAR_0 = 48;
 const CHAR_9 = 57;

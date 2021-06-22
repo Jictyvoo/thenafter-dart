@@ -14,12 +14,6 @@ enum LexicalStates {
 /// ASCII code for character `!`
 const CHAR_EXCLAMATION = 33;
 
-/// ASCII code for character `"`
-const CHAR_QUOTES = 34;
-
-/// ASCII code for character `'`
-const CHAR_SINGLE_QUOTE = 39;
-
 /// ASCII code for character `:`
 const CHAR_COLON = 58;
 
@@ -56,6 +50,14 @@ class LexicalInformation {
         state = LexicalStates.nil,
         lineNumber = 1,
         column = 1;
+
+  /// Clear all information stored
+  void clear() {
+    column = 1;
+    lineNumber = 1;
+    _lexemeBuilder.clear();
+    state = LexicalStates.nil;
+  }
 
   /// Add a new character to lexemeBuilder
   void addCharacter(int firstCharacter, [int secondCharacter = 0]) {
