@@ -5,12 +5,41 @@ abstract class StringHelper {
     return target * quantity;
   }
 
+  static String removeQuotes(String target) {
+    final lastCharacter = target.codeUnitAt(target.length - 1);
+    final firstCharacter = target.codeUnitAt(0);
+    if (lastCharacter != firstCharacter ||
+        !isQuotes(firstCharacter) ||
+        !isQuotes(lastCharacter)) {
+      return target;
+    }
+    // Start fixing string
+    final buffer = StringBuffer();
+    var openedString = 0;
+    var timesClosed = 0;
+    for (final character in target.runes) {
+      if (openedString == 0 && isQuotes(character)) {
+        openedString = character;
+      } else if (character == openedString) {
+        timesClosed += 1;
+        openedString = 0;
+      } else {
+        buffer.writeCharCode(character);
+      }
+    }
+    return timesClosed == 1 ? buffer.toString() : target;
+  }
+
   static bool isWhitespace(int rune) {
     return rune == CHAR_SPACE ||
         rune == CHAR_TAB ||
         rune == CHAR_VERTICAL_TAB ||
         rune == CHAR_FORM_FEED ||
         UNKNOWN_WHITESPACE.contains(rune);
+  }
+
+  static bool isQuotes(int rune) {
+    return rune == CHAR_SINGLE_QUOTE || rune == CHAR_QUOTES;
   }
 
   static bool isLower(int rune) {
