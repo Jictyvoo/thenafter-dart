@@ -16,7 +16,7 @@ mixin FirstAnalyzer on AbstractAnalyzer {
       throw ('Production "$productionName" not defined');
     }
     for (final production in allProductions[productionName]!) {
-      for (var count = 0; count < production.length; count++) {
+      for (var count = 0; count < production.length; count += 1) {
         if (isProduction(production[count])) {
           // in case first element in allProductions is a sub-production,
           // it will get the first set of it
@@ -33,8 +33,8 @@ mixin FirstAnalyzer on AbstractAnalyzer {
         } else {
           // if during the loop it gets a terminal symbol, add it to first set
           firstSet.add(sanitizeTerminals(production[count]));
+          count = production.length + 1;
         }
-        count = count + 1;
       }
     }
 
