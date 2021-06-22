@@ -1,6 +1,6 @@
 import '../util/types_util.dart';
 
-abstract class CodeGeneratorInterface {
+abstract class SyntacticGeneratorInterface {
   void buildNeededImports(StringBuffer buffer);
 
   String genFunctionName(String productionName);

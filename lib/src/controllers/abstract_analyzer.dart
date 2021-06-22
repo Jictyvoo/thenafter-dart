@@ -22,27 +22,8 @@ abstract class AbstractAnalyzer {
     return main;
   }
 
-  String listTerminalToString(
-    Set<String> terminals, {
-    String delimiter = ',',
-    Set<String> excluded = const <String>{},
-  }) {
-    final buffer = StringBuffer();
-    var count = 0;
-    for (final word in terminals) {
-      if (word.isNotEmpty && !excluded.contains(word)) {
-        if (count > 0) {
-          buffer.write(delimiter);
-        }
-        buffer.write('${sanitizeTerminals(word)}');
-        count++;
-      }
-    }
-    return '[${buffer.toString()}]';
-  }
-
   /// Must return a string with single quote
-  String sanitizeTerminals(String original) {
+  String sanitizeTerminal(String original) {
     if (original == "'" || original.isEmpty || original == '"') {
       return "'$original'";
     }
@@ -69,29 +50,6 @@ abstract class AbstractAnalyzer {
         buffer.writeCharCode(character);
       }
       index += 1;
-    }
-    return buffer.toString();
-  }
-
-  String sanitizeName(String productionName, [bool allLower = true]) {
-    final buffer = StringBuffer();
-    var lastCharacter = 0;
-    for (var character in productionName.runes) {
-      if (StringHelper.isWhitespace(character) ||
-          StringHelper.isNewline(character)) {
-        buffer.write('_');
-      } else if (character != 60 && character != 62) {
-        if (StringHelper.isLower(lastCharacter) &&
-            !StringHelper.isLower(character)) {
-          buffer.write('_');
-        }
-        if (allLower && !StringHelper.isLower(character)) {
-          final temp = String.fromCharCode(character);
-          character = temp.toLowerCase().codeUnitAt(0);
-        }
-        buffer.writeCharCode(character);
-      }
-      lastCharacter = character;
     }
     return buffer.toString();
   }

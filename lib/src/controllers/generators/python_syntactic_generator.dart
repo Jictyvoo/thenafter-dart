@@ -1,15 +1,15 @@
 library synthatic_productions_code_gen;
 
+import 'package:thenafter_dart/src/controllers/generators/abstract_generator.dart';
 import 'package:thenafter_dart/src/models/value/token.dart';
 
-import 'controllers/abstract_analyzer.dart';
-import 'models/code_generator_interface.dart';
-import 'util/helpers/string_helper.dart';
-import 'util/types_util.dart';
+import '../../models/code_generator_interface.dart';
+import '../../util/helpers/string_helper.dart';
+import '../../util/types_util.dart';
 
 /// A PythonCodeGenerator.
-class PythonGenerator extends AbstractAnalyzer
-    implements CodeGeneratorInterface {
+class PythonGenerator extends AbstractCodeGenerator
+    implements SyntacticGeneratorInterface {
   @override
   void buildNeededImports(StringBuffer buffer) {
     buffer.writeln('from collections import Callable\n');
@@ -128,7 +128,7 @@ class PythonGenerator extends AbstractAnalyzer
           );
         } else {
           buffer.writeln(
-            '.get_lexeme() == ${sanitizeTerminals(production.lexeme)}:',
+            '.get_lexeme() == ${sanitizeTerminal(production.lexeme)}:',
           );
         }
         buffer.writeln('${tabsPlus[1]}node.add(token_queue.remove())');
@@ -136,7 +136,7 @@ class PythonGenerator extends AbstractAnalyzer
 
       // In case failed the predict, add error to list
       if (!firstSet.contains('')) {
-        var expectedTokens = '[${sanitizeTerminals(production.lexeme)}]';
+        var expectedTokens = '[${sanitizeTerminal(production.lexeme)}]';
         if (subIsProduction) {
           expectedTokens = localFirstSetName;
         }
@@ -218,7 +218,7 @@ class PythonGenerator extends AbstractAnalyzer
           );
         } else {
           buffer.writeln(
-            '.get_lexeme() == ${sanitizeTerminals(firstProduction.lexeme)}:',
+            '.get_lexeme() == ${sanitizeTerminal(firstProduction.lexeme)}:',
           );
         }
         buffer.writeln('\t\tnode.add(token_queue.remove())');
