@@ -37,7 +37,7 @@ class BNFSyntactic {
       productionList.add(<String>[]);
       if (subProductions.isEmpty) {
         // add empty production in case production is already empty
-        subProductions.add('');
+        subProductions.add(Token.empty.lexeme);
       }
     } else if (previousToken.tokenType == TokenType.production &&
         token.tokenType == TokenType.operator &&

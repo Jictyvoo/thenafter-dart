@@ -1,3 +1,4 @@
+import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
 
 abstract class AbstractAnalyzer {
@@ -33,7 +34,7 @@ abstract class AbstractAnalyzer {
         if (count > 0) {
           buffer.write(delimiter);
         }
-        buffer.write("'$word'");
+        buffer.write('${sanitizeTerminals(word)}');
         count++;
       }
     }
@@ -42,23 +43,39 @@ abstract class AbstractAnalyzer {
 
   /// Must return a string with single quote
   String sanitizeTerminals(String original) {
-    if (original == "'" || original.isEmpty) {
+    if (original == "'" || original.isEmpty || original == '"') {
       return "'$original'";
     }
-    if (!original.startsWith("'")) {
-      original = "'" + original;
+    var firstCharacter = 0;
+    var index = 0;
+    final buffer = StringBuffer();
+    for (final character in original.runes) {
+      if (index == 0) {
+        buffer.writeCharCode(CHAR_SINGLE_QUOTE);
+        if (StringHelper.isQuotes(character)) {
+          firstCharacter = character;
+        } else {
+          buffer.writeCharCode(character);
+        }
+      } else if (index == original.length - 1) {
+        if (character != firstCharacter) {
+          buffer.writeCharCode(character);
+        }
+        buffer.writeCharCode(CHAR_SINGLE_QUOTE);
+      } else {
+        buffer.writeCharCode(character);
+      }
+      index += 1;
     }
-    if (!original.endsWith("'")) {
-      original = original + "'";
-    }
-    return original;
+    return buffer.toString();
   }
 
   String sanitizeName(String productionName, [bool allLower = true]) {
     final buffer = StringBuffer();
     var lastCharacter = 0;
     for (var character in productionName.runes) {
-      if (StringHelper.isWhitespace(character)) {
+      if (StringHelper.isWhitespace(character) ||
+          StringHelper.isNewline(character)) {
         buffer.write('_');
       } else if (character != 60 && character != 62) {
         if (StringHelper.isLower(lastCharacter) &&
