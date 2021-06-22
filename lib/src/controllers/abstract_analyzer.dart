@@ -22,9 +22,9 @@ abstract class AbstractAnalyzer {
   }
 
   String listTerminalToString(
-    List<String> terminals, {
+    Set<String> terminals, {
     String delimiter = ',',
-    List<String> excluded = const <String>[],
+    Set<String> excluded = const <String>{},
   }) {
     final buffer = StringBuffer();
     var count = 0;

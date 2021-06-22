@@ -46,7 +46,7 @@ class PythonGenerator extends AbstractAnalyzer
   }
 
   String buildVerifyTokenTypes(
-    List<String> listTerminals,
+    Set<String> listTerminals,
     final GivenInformation givenInformation, [
     final bool varDeclaration = true,
   ]) {
@@ -72,15 +72,15 @@ class PythonGenerator extends AbstractAnalyzer
     final String firstProduction,
     final List<String> productionsList,
     final GivenInformation givenInformation,
-    final Map<String, List<String>> firsts,
+    final Map<String, Set<String>> firsts,
     final int amountTabs,
   ) {
-    final excludedTerminals = givenInformation.keys.toList();
+    final excludedTerminals = givenInformation.keys.toSet();
     final buffer = StringBuffer();
     for (var index = 1; index < productionsList.length; index++) {
       final production = productionsList[index];
       final subIsProduction = isProduction(production);
-      final firstSet = firsts[production] ?? [];
+      final firstSet = firsts[production] ?? <String>{};
       final tabsPlus = <String>[
         StringHelper.multiplyString('\t', amountTabs),
         StringHelper.multiplyString('\t', amountTabs + 1),
@@ -168,11 +168,11 @@ class PythonGenerator extends AbstractAnalyzer
   String buildFunction(
     final String name,
     final List<List<String>> productions,
-    final Map<String, List<String>> firsts,
+    final Map<String, Set<String>> firsts,
     final GivenInformation givenInformation,
   ) {
     // Signature and general function declarations
-    final excludedTerminals = givenInformation.keys.toList();
+    final excludedTerminals = givenInformation.keys.toSet();
     final buffer = _writeFunctionBegin(name, productions);
     buffer.writeln(
       '\ttemp_token_type = token_queue.peek().get_token_type()',
@@ -182,7 +182,7 @@ class PythonGenerator extends AbstractAnalyzer
       final production = productions[index];
       final firstProduction = production[0];
       buffer.writeln('\t# Predicting for production ${production.toString()}');
-      final firstSet = firsts[firstProduction] ?? [];
+      final firstSet = firsts[firstProduction] ?? <String>{};
       final tokenTypesVerification = buildVerifyTokenTypes(
         firstSet,
         givenInformation,
