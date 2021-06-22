@@ -46,6 +46,9 @@ abstract class AbstractAnalyzer {
     if (original == "'" || original.isEmpty || original == '"') {
       return "'$original'";
     }
+    if (!StringHelper.isQuotes(original.codeUnitAt(0))) {
+      return original;
+    }
     var firstCharacter = 0;
     var index = 0;
     final buffer = StringBuffer();

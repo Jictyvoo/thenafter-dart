@@ -32,6 +32,7 @@ mixin FirstAnalyzer on AbstractAnalyzer {
           }
         } else {
           // if during the loop it gets a terminal symbol, add it to first set
+          // FIXME: When ProductionsMap type change to Token, verify "if (token.tokenType != TokenType.genericTerminal)"
           firstSet.add(sanitizeTerminals(production[count]));
           count = production.length + 1;
         }
