@@ -74,14 +74,15 @@ void main(List<String> args) {
           argResults.command?[GeneratedOptions.productions.value] ?? false;
       final outputLanguage =
           argResults.command?[GeneratedOptions.language.value] ?? 'lua';
-      print(
-        generateFileContents(
-          _stringToLanguage(outputLanguage),
-          parseResult,
-          result,
-          generateProductions,
-        ),
+      final selectedLanguage = _stringToLanguage(outputLanguage);
+      final contentsBuffer = generateFileContents(
+        selectedLanguage,
+        parseResult,
+        result,
+        generateProductions,
       );
+      final file = File('$fileName.${selectedLanguage.extension}');
+      file.writeAsStringSync(contentsBuffer.toString());
     } else {
       generateSyntacticFile(parseResult, result);
     }

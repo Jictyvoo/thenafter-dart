@@ -12,11 +12,11 @@ class LuaGenerator extends AbstractCodeGenerator
   }
 
   String buildClassDeclaration() {
-    return 'return {';
+    return 'return {\n';
   }
 
   String buildClassEnd() {
-    return '}';
+    return '\n}\n';
   }
 
   void _buildMapSet(
@@ -25,28 +25,28 @@ class LuaGenerator extends AbstractCodeGenerator
     ProductionTerminals productionSet,
   ) {
     var index = 0;
-    buffer.write('$setName = {');
+    buffer.write('$setName = {\n');
     for (final entry in productionSet.entries) {
       if (index > 0) {
-        buffer.write(', ');
+        buffer.write(',\n');
       }
-      buffer.write('["${entry.key}"] = {');
+      buffer.write('\t\t["${entry.key}"] = {\n');
       // Sub-productions foreach
       var subIndex = 0;
       for (final subProductions in entry.value) {
         if (subIndex > 0) {
-          buffer.write(', ');
+          buffer.write(',\n');
         }
-        buffer.write('${replaceQuote(
+        buffer.write('\t\t\t${replaceQuote(
           sanitizeTerminal(subProductions),
           CHAR_QUOTES,
         )}');
         subIndex += 1;
       }
-      buffer.write('}');
+      buffer.write('\n\t\t}');
       index += 1;
     }
-    buffer.write('}');
+    buffer.write('\n\t}');
   }
 
   void _buildMapProductions(
@@ -54,20 +54,20 @@ class LuaGenerator extends AbstractCodeGenerator
     ProductionsMap productionSet,
   ) {
     var index = 0;
-    buffer.write('productions = {');
+    buffer.write('\tproductions = {\n');
 
     for (final entry in productionSet.entries) {
       if (index > 0) {
-        buffer.write(', ');
+        buffer.write(',\n');
       }
-      buffer.write('["${entry.key}"] = {');
+      buffer.write('\t\t["${entry.key}"] = {\n');
       // Sub-productions foreach
       var subIndex = 0;
       for (final subProductions in entry.value) {
         if (subIndex > 0) {
-          buffer.write(', ');
+          buffer.write(',\n');
         }
-        buffer.write('{');
+        buffer.write('\t\t\t{');
         var counter = 0;
         for (final singleProduction in subProductions) {
           if (counter > 0) {
@@ -79,10 +79,10 @@ class LuaGenerator extends AbstractCodeGenerator
         buffer.write('}');
         subIndex += 1;
       }
-      buffer.write('}');
+      buffer.write('\n\t\t}');
       index += 1;
     }
-    buffer.write('}');
+    buffer.write('\n\t}');
   }
 
   @override
@@ -97,15 +97,15 @@ class LuaGenerator extends AbstractCodeGenerator
 
     for (final entry in grammarData.extraDefinitions.entries) {
       buffer.write(
-        '${sanitizeName(entry.key)} = ${stringifyTerminal(entry.value, CHAR_QUOTES)},',
+        '\t${sanitizeName(entry.key)} = ${stringifyTerminal(entry.value, CHAR_QUOTES)},\n',
       );
     }
 
-    _buildMapSet('firstSet', buffer, firstFollow.firstList);
-    buffer.write(', ');
-    _buildMapSet('followSet', buffer, firstFollow.followList);
-    if (generateProductions) {
-      buffer.write(', ');
+    _buildMapSet('\tfirstSet', buffer, firstFollow.firstList);
+    buffer.write(',\n');
+    _buildMapSet('\tfollowSet', buffer, firstFollow.followList);
+    if (!generateProductions) {
+      buffer.write(',\n');
       _buildMapProductions(buffer, grammarData.productions);
     }
 
