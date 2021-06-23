@@ -7,7 +7,7 @@ abstract class AbstractAnalyzer {
   }
 
   bool valueIsEmpty(String toTest) {
-    return toTest == "''" || toTest.isEmpty;
+    return toTest.isEmpty || toTest == "''" || toTest == '""';
   }
 
   Set<String> joinSets(
@@ -22,20 +22,16 @@ abstract class AbstractAnalyzer {
     return main;
   }
 
-  /// Must return a string with single quote
-  String sanitizeTerminal(String original) {
-    if (original == "'" || original.isEmpty || original == '"') {
-      return "'$original'";
-    }
-    if (!StringHelper.isQuotes(original.codeUnitAt(0))) {
-      return original;
-    }
+  String replaceQuote(
+    String original, [
+    int desiredCharacter = CHAR_SINGLE_QUOTE,
+  ]) {
     var firstCharacter = 0;
     var index = 0;
     final buffer = StringBuffer();
     for (final character in original.runes) {
       if (index == 0) {
-        buffer.writeCharCode(CHAR_SINGLE_QUOTE);
+        buffer.writeCharCode(desiredCharacter);
         if (StringHelper.isQuotes(character)) {
           firstCharacter = character;
         } else {
@@ -45,12 +41,25 @@ abstract class AbstractAnalyzer {
         if (character != firstCharacter) {
           buffer.writeCharCode(character);
         }
-        buffer.writeCharCode(CHAR_SINGLE_QUOTE);
+        buffer.writeCharCode(desiredCharacter);
       } else {
         buffer.writeCharCode(character);
       }
       index += 1;
     }
     return buffer.toString();
+  }
+
+  /// Must return a string with single quote
+  String sanitizeTerminal(String original) {
+    if (original.isEmpty || original == '"') {
+      return "'$original'";
+    } else if (original == "'") {
+      return '"\'"';
+    }
+    if (!StringHelper.isQuotes(original.codeUnitAt(0))) {
+      return original;
+    }
+    return replaceQuote(original);
   }
 }

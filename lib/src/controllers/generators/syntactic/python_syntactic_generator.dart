@@ -1,11 +1,10 @@
 library synthatic_productions_code_gen;
 
 import 'package:thenafter_dart/src/controllers/generators/abstract_generator.dart';
+import 'package:thenafter_dart/src/models/code_generator_interface.dart';
 import 'package:thenafter_dart/src/models/value/token.dart';
-
-import '../../models/code_generator_interface.dart';
-import '../../util/helpers/string_helper.dart';
-import '../../util/types_util.dart';
+import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
+import 'package:thenafter_dart/src/util/types_util.dart';
 
 /// A PythonCodeGenerator.
 class PythonGenerator extends AbstractCodeGenerator
