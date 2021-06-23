@@ -67,30 +67,4 @@ abstract class AbstractCodeGenerator extends AbstractAnalyzer {
     buffer.writeCharCode(quoteType);
     return buffer.toString();
   }
-
-  /*@override
-  String replaceQuote(
-    String original, [
-    int desiredCharacter = CHAR_SINGLE_QUOTE,
-  ]) {
-    final buffer = StringBuffer();
-    var index = 0;
-    for (final character in original.runes) {
-      if (index == 0) {
-        buffer.writeCharCode(CHAR_QUOTES);
-        if (!StringHelper.isQuotes(character)) {
-          buffer.writeCharCode(character);
-        }
-      } else if (index == original.length - 1) {
-        if (!StringHelper.isQuotes(character)) {
-          buffer.writeCharCode(character);
-        }
-        buffer.writeCharCode(CHAR_QUOTES);
-      } else {
-        buffer.writeCharCode(character);
-      }
-      index += 1;
-    }
-    return buffer.toString();
-  }*/
 }
