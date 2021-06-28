@@ -11,6 +11,10 @@ abstract class SyntacticGeneratorInterface {
 }
 
 abstract class CodeGeneratorInterface {
-  void generate(StringBuffer buffer, GrammarInformation grammarData,
-      FirstFollowResult firstFollow);
+  void generate(
+    StringBuffer buffer,
+    GrammarInformation grammarData,
+    FirstFollowResult firstFollow, [
+    bool generateProductions = false,
+  ]);
 }

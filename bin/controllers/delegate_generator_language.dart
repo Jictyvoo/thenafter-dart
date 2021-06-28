@@ -9,17 +9,14 @@ StringBuffer generateFileContents(
   bool generateProductions,
 ) {
   final buffer = StringBuffer();
+  CodeGeneratorInterface generator;
   switch (outputLanguage) {
     case OutputLanguage.lua:
-      LuaGenerator().generate(
-        buffer,
-        grammarData,
-        firstFollow,
-        generateProductions,
-      );
+      generator = LuaGenerator();
       break;
     case OutputLanguage.dart:
-      throw UnimplementedError('Dart language generator unimplemented');
+      generator = DartGenerator();
+      break;
     case OutputLanguage.java:
       throw UnimplementedError('Java language generator unimplemented');
     case OutputLanguage.python:
@@ -27,5 +24,11 @@ StringBuffer generateFileContents(
     case OutputLanguage.vlang:
       throw UnimplementedError('V language generator unimplemented');
   }
+  generator.generate(
+    buffer,
+    grammarData,
+    firstFollow,
+    generateProductions,
+  );
   return buffer;
 }
