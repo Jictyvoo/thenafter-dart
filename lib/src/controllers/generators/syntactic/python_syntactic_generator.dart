@@ -21,6 +21,7 @@ class PythonGenerator extends AbstractCodeGenerator
     buffer.writeln('from util.token_types import TokenTypes\n');
   }
 
+  /// Generates a custom types needed by the generated code
   void buildTypeDeclarations(StringBuffer buffer) {
     buffer.writeln(
       'productions_functions: dict[EProduction, '
@@ -46,6 +47,7 @@ class PythonGenerator extends AbstractCodeGenerator
     return buffer.toString();
   }
 
+  /// Build a token type verification
   String buildVerifyTokenTypes(
     Set<String> listTerminals,
     final GivenInformation givenInformation, [
@@ -166,6 +168,7 @@ class PythonGenerator extends AbstractCodeGenerator
     return buffer;
   }
 
+  /// Build all functions that are inside the syntactic analyzer
   String buildFunction(
     final String name,
     final SubProductionsList productions,

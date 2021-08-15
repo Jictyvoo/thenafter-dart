@@ -4,11 +4,16 @@ import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
+/// Default BNF lexical analyzer
 class BNFLexical {
+  /// A list with all tokens parsed
   final List<Token> tokenList;
+
+  /// A list with all errors noticed
   final List<String> errorList;
   final LexicalInformation _lexicalInformation;
 
+  /// Default constructor that initializes helper attributes
   BNFLexical()
       : tokenList = <Token>[],
         errorList = <String>[],
@@ -131,6 +136,8 @@ class BNFLexical {
     }
   }
 
+  /// Starts the parse using a iterator as input.
+  /// At the end, returns all tokens identified
   List<Token> start(InputIterator input) {
     var previousCharacter = 0;
     for (final character in input) {
@@ -199,6 +206,7 @@ class BNFLexical {
     return tokenList;
   }
 
+  /// Clear all attributes
   void clear() {
     tokenList.clear();
     errorList.clear();

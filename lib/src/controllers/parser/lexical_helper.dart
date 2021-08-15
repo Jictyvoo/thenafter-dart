@@ -1,13 +1,30 @@
 import 'package:thenafter_dart/src/models/value/token.dart';
 
+/// All states for lexical parser
 enum LexicalStates {
+  /// Null state, default
   nil,
+
+  /// String state, a string has been opened and
+  /// is under construction in the parser
   string,
+
+  /// A production has been opened and gonna be constructed
   production,
+
+  /// A bigger then 1 length operator has been detected
   operator,
+
+  /// Noticed a identifier, parsing it until reach a delimiter
   identifier,
+
+  /// Detected a comment, parsing it until it ends
   comment,
+
+  /// A attribution has been detected, parsing it until the end
   attribution,
+
+  /// A character set has been detected, parsing it until the end
   characterSet
 }
 
@@ -41,10 +58,18 @@ const CHAR_CLOSE_BRACKETS = 125;
 /// Stores all information needed about lexeme construction and Lexical state
 class LexicalInformation {
   final StringBuffer _lexemeBuilder;
+
+  /// Current state of the parser
   LexicalStates state;
+
+  /// Current line number that was read in the parser
   int lineNumber;
+
+  /// Current column read in the parser
   int column;
 
+  /// Default constructor of the lexical parser, that starts with all
+  /// needed values for it work
   LexicalInformation()
       : _lexemeBuilder = StringBuffer(),
         state = LexicalStates.nil,

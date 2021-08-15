@@ -1,10 +1,13 @@
 import 'string_constants.dart';
 
+/// General string helper
 abstract class StringHelper {
+  /// Multiply string with given times
   static String multiplyString(String target, int quantity) {
     return target * quantity;
   }
 
+  /// Remove quotes from the string that are in the start and the end
   static String removeQuotes(String target) {
     final lastCharacter = target.codeUnitAt(target.length - 1);
     final firstCharacter = target.codeUnitAt(0);
@@ -30,6 +33,7 @@ abstract class StringHelper {
     return timesClosed == 1 ? buffer.toString() : target;
   }
 
+  /// Checks if the given rune represents a whitespace
   static bool isWhitespace(int rune) {
     return rune == CHAR_SPACE ||
         rune == CHAR_TAB ||
@@ -38,36 +42,44 @@ abstract class StringHelper {
         UNKNOWN_WHITESPACE.contains(rune);
   }
 
+  /// Checks if the given rune represents a quote
   static bool isQuotes(int rune) {
     return rune == CHAR_SINGLE_QUOTE || rune == CHAR_QUOTES;
   }
 
+  /// Checks if the given rune represents a whitespace
   static bool isLower(int rune) {
     return rune >= CHAR_LOWER_A && rune <= CHAR_LOWER_Z;
   }
 
+  /// Checks if the given rune represents a upper case character
   static bool isUpper(int rune) {
     return rune >= CHAR_UPPER_A && rune <= CHAR_UPPER_Z;
   }
 
+  /// Checks if the given rune represents a number
   static bool isNumber(int rune) {
     return rune >= CHAR_0 && rune <= CHAR_9;
   }
 
+  /// Checks if the given rune represents a upper or lower case character
   static bool isAlphabetic(int rune) {
     return isLower(rune) || isUpper(rune);
   }
 
+  /// Checks if the given rune represents a underline
   static bool isUnderline(int rune) {
     return String.fromCharCode(rune) == '_';
   }
 
+  /// Checks if the given rune represents a new line
   static bool isNewline(int rune) {
     return String.fromCharCode(rune) == '\n' ||
         rune == CHAR_CARRIAGE_RETURN ||
         rune == CHAR_LINE_FEED;
   }
 
+  /// Checks if the conjunction of given runes represents a CRLF new line
   static bool isCRLF(int first, int second) {
     return String.fromCharCodes([first, second]) == '\r\n';
   }

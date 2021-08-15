@@ -8,16 +8,11 @@ import 'package:thenafter_dart/src/util/types_util.dart';
 /// The code generator that outputs a code using dart constraints
 class DartGenerator extends AbstractCodeGenerator
     implements CodeGeneratorInterface {
-
-  String buildImports() {
-    return '';
-  }
-
-  String buildClassDeclaration() {
+  String _buildClassDeclaration() {
     return 'abstract class GrammarDefinition {\n';
   }
 
-  String buildClassEnd() {
+  String _buildClassEnd() {
     return '\n}\n';
   }
 
@@ -95,8 +90,7 @@ class DartGenerator extends AbstractCodeGenerator
     FirstFollowResult firstFollow, [
     bool generateProductions = false,
   ]) {
-    buffer.write(buildImports());
-    buffer.write(buildClassDeclaration());
+    buffer.write(_buildClassDeclaration());
 
     for (final entry in grammarData.extraDefinitions.entries) {
       buffer.write(
@@ -113,6 +107,6 @@ class DartGenerator extends AbstractCodeGenerator
     }
     buffer.write(';');
 
-    buffer.write(buildClassEnd());
+    buffer.write(_buildClassEnd());
   }
 }

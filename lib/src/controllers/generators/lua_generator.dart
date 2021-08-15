@@ -5,17 +5,14 @@ import 'package:thenafter_dart/src/models/value/grammar_information.dart';
 import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
+/// The code generator that outputs a code using lua constraints
 class LuaGenerator extends AbstractCodeGenerator
     implements CodeGeneratorInterface {
-  String buildImports() {
-    return '';
-  }
-
-  String buildClassDeclaration() {
+  String _buildClassDeclaration() {
     return 'return {\n';
   }
 
-  String buildClassEnd() {
+  String _buildClassEnd() {
     return '\n}\n';
   }
 
@@ -92,8 +89,7 @@ class LuaGenerator extends AbstractCodeGenerator
     FirstFollowResult firstFollow, [
     bool generateProductions = false,
   ]) {
-    buffer.write(buildImports());
-    buffer.write(buildClassDeclaration());
+    buffer.write(_buildClassDeclaration());
 
     for (final entry in grammarData.extraDefinitions.entries) {
       buffer.write(
@@ -109,6 +105,6 @@ class LuaGenerator extends AbstractCodeGenerator
       _buildMapProductions(buffer, grammarData.productions);
     }
 
-    buffer.write(buildClassEnd());
+    buffer.write(_buildClassEnd());
   }
 }

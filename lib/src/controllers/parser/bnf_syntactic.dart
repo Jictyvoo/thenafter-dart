@@ -2,14 +2,34 @@ import 'package:thenafter_dart/src/models/value/token.dart';
 import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
-enum SyntacticState { nil, openedProduction, openedAttribution }
+/// Defined states for the BNF syntactic analyzer
+enum SyntacticState {
+  /// No sub state-machine initialized, current state is null
+  nil,
 
+  /// A production has been opened, parse data for the production
+  openedProduction,
+
+  /// A attribution has been opened, gather data for attribution
+  openedAttribution
+}
+
+/// The default syntactic analyzer for a BNF grammar
 class BNFSyntactic {
+  /// List of all productions
   final ProductionsMap productions;
+
+  /// List of all extra definitions
   final Map<String, String> extraDefinitions;
+
+  /// The current state of the parser
   SyntacticState _state;
+
+  /// The last token in the left side
   Token _leftSideToken;
 
+  /// The default constructor that init the object with empty list,
+  /// and on the nil state
   BNFSyntactic()
       : _state = SyntacticState.nil,
         _leftSideToken = Token.empty,
@@ -66,6 +86,7 @@ class BNFSyntactic {
     }
   }
 
+  /// Start parsing a token list and organize it's information
   void start(List<Token> tokenList) {
     var previousToken = Token.empty;
     iterateTokens:
