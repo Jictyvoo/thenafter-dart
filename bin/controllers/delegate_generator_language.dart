@@ -1,3 +1,4 @@
+import 'package:thenafter_dart/generators.dart';
 import 'package:thenafter_dart/thenafter_dart.dart';
 
 import '../util/output_languages.dart';

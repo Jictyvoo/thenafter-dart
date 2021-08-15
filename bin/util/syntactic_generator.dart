@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:thenafter_dart/generators.dart';
 import 'package:thenafter_dart/thenafter_dart.dart';
 
 void generateSyntacticFile(
