@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:thenafter_dart/thenafter_dart.dart';
 
-void generateSyntacticFile(GrammarInformation parseResult, FirstFollowResult result) {
+void generateSyntacticFile(
+  GrammarInformation parseResult,
+  FirstFollowResult result,
+) {
   final generator = PythonGenerator();
   final fileBuffer = StringBuffer();
   final givenInfo = <String, String>{

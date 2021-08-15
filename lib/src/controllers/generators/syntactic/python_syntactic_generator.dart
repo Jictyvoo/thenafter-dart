@@ -87,7 +87,7 @@ class PythonGenerator extends AbstractCodeGenerator
         StringHelper.multiplyString('\t', amountTabs + 1),
         StringHelper.multiplyString('\t', amountTabs + 2),
       ];
-      final localFirstSetName = 'local_first_set';
+      const localFirstSetName = 'local_first_set';
       if (subIsProduction) {
         buffer.writeln('${tabsPlus[0]}# Predicting for production $production');
         buffer.writeln(
@@ -154,7 +154,7 @@ class PythonGenerator extends AbstractCodeGenerator
     final String name,
     final SubProductionsList productions,
   ) {
-    final generalSignature = 'token_queue: Queue, '
+    const generalSignature = 'token_queue: Queue, '
         'error_list: list[SynthaticParseErrors]';
     final signature =
         'def ${genFunctionName(name)}($generalSignature) -> SynthaticNode:\n';

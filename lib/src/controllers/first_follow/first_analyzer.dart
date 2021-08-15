@@ -22,7 +22,7 @@ mixin FirstAnalyzer on AbstractAnalyzer {
         if (production[count].tokenType == TokenType.production) {
           // in case first element in allProductions is a sub-production,
           // it will get the first set of it
-          var firstOfSubProduction = firstOf(
+          final firstOfSubProduction = firstOf(
             production[count].lexeme,
             allProductions,
             firstList,

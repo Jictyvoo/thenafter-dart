@@ -15,7 +15,7 @@ abstract class AbstractCodeGenerator extends AbstractAnalyzer {
         if (count > 0) {
           buffer.write(delimiter);
         }
-        buffer.write('${sanitizeTerminal(word)}');
+        buffer.write(sanitizeTerminal(word));
         count++;
       }
     }
@@ -63,6 +63,7 @@ abstract class AbstractCodeGenerator extends AbstractAnalyzer {
         buffer.write('\\');
       }
       buffer.writeCharCode(character);
+      previousCharacter = character;
     }
     buffer.writeCharCode(quoteType);
     return buffer.toString();
