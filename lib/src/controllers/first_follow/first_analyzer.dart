@@ -3,7 +3,10 @@ import 'package:thenafter_dart/src/models/value/token.dart';
 import '../../util/types_util.dart';
 import '../abstract_analyzer.dart';
 
+/// A analyzer that analysis a input and generates a first-set
 mixin FirstAnalyzer on AbstractAnalyzer {
+  /// Recursive function that receives a productions map and generates
+  /// the first set for each production
   SymbolSet firstOf(
     String productionName,
     ProductionsMap allProductions,

@@ -59,8 +59,8 @@ void main(List<String> args) {
     }
     final byteLines = File(fileName).readAsBytesSync();
     final startTime = DateTime.now();
-    final parseResult = BNFParser().start(byteLines);
-    final result = FirstFollow().start(
+    final parseResult = BNFParser().call(byteLines);
+    final result = FirstFollow().call(
       parseResult.productions,
       parseResult.startSymbol.lexeme,
     );

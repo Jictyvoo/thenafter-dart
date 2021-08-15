@@ -9,6 +9,7 @@ export 'src/models/value/grammar_information.dart';
 export 'src/models/value/token.dart' show TokenType;
 export 'src/util/types_util.dart';
 
+/// Make possible to create a [Token] with a given [lexeme] and [TokenType]
 Token createToken(String lexeme, TokenType tokenType) {
   return Token(lexeme, 0, 0, tokenType);
 }

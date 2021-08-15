@@ -6,11 +6,22 @@ import 'abstract_analyzer.dart';
 import 'first_follow/first_analyzer.dart';
 import 'first_follow/follow_analyzer.dart';
 
+/// The FirstFollow default analyzer for a given productions map
 class FirstFollow extends AbstractAnalyzer with FirstAnalyzer, FollowAnalyzer {
+  /// Holds information about which each productions produces.
+  ///
+  /// If a production is "<A> := <B> <C> | <D>";
+  /// This attribute with have a map of sets like: "<A>: {'<B>', '<C>', '<D>'}"
   final Map<String, SymbolSet> allProducers;
+
+  /// A Map containing the list of first terminals for each production
   final ProductionTerminals firstList;
+
+  /// A Map containing the list of follow terminals for each production
   final ProductionTerminals followList;
 
+  /// Default constructor for the first and follow analyzer, it initializes
+  /// all required fields with empty maps
   FirstFollow()
       : allProducers = <String, SymbolSet>{},
         firstList = <String, SymbolSet>{},
@@ -31,7 +42,9 @@ class FirstFollow extends AbstractAnalyzer with FirstAnalyzer, FollowAnalyzer {
     }
   }
 
-  FirstFollowResult start(
+  /// With a given [ProductionsMap] and startSymbol, the algorithm starts to
+  /// calculate the first and follow sets
+  FirstFollowResult call(
     ProductionsMap productions, [
     String startSymbol = '',
   ]) {

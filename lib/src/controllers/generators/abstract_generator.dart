@@ -2,7 +2,10 @@ import 'package:thenafter_dart/src/controllers/abstract_analyzer.dart';
 import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
 
+/// A interface that has a set of methods that
+/// helps dealing with code generation
 abstract class AbstractCodeGenerator extends AbstractAnalyzer {
+  /// Stringfy a list of terminals, and put it in a array form
   String listTerminalToString(
     Set<String> terminals, {
     String delimiter = ',',
@@ -22,6 +25,7 @@ abstract class AbstractCodeGenerator extends AbstractAnalyzer {
     return '[${buffer.toString()}]';
   }
 
+  /// Sanitize a name to be in correct way to be used as an identifier
   String sanitizeName(String productionName, [bool allLower = true]) {
     final buffer = StringBuffer();
     var lastCharacter = 0;
@@ -49,6 +53,8 @@ abstract class AbstractCodeGenerator extends AbstractAnalyzer {
     return buffer.toString();
   }
 
+  /// Converts a terminal into a string, making possible to convert
+  /// escape characters and quotes, so it will generate a valid string
   String stringifyTerminal(String original,
       [int quoteType = CHAR_SINGLE_QUOTE]) {
     final buffer = StringBuffer()..writeCharCode(quoteType);

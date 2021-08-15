@@ -23,8 +23,11 @@ GrammarInformation _getElements(
   );
 }
 
+/// The default BNF Parser for a grammar
 class BNFParser {
-  GrammarInformation start(InputIterator source) {
+  /// Takes a source input of [rune] or [codeUnit]
+  /// and the parsed result in a [GrammarInformation] object
+  GrammarInformation call(InputIterator source) {
     final lexicalAnalyzer = BNFLexical();
     final tokens = lexicalAnalyzer.start(source);
     final syntacticAnalyzer = BNFSyntactic();

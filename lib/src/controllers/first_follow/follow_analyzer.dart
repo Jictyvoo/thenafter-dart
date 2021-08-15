@@ -3,7 +3,9 @@ import 'package:thenafter_dart/src/models/value/token.dart';
 import '../../util/types_util.dart';
 import '../abstract_analyzer.dart';
 
+/// A analyzer that analysis a input and generates a follow-set
 mixin FollowAnalyzer on AbstractAnalyzer {
+  /// Returns the first-set of a given production
   SymbolSet getFirst(String production, ProductionTerminals firstList) {
     if (isProduction(production)) {
       return firstList[production] ?? <String>{};
@@ -11,6 +13,7 @@ mixin FollowAnalyzer on AbstractAnalyzer {
     return <String>{}..add(production);
   }
 
+  /// returns the position of a symbol in ahead
   int getAheadSymbol(String lookingFor, List<Token> searchIn) {
     for (var index = 0; index < searchIn.length; index++) {
       final value = searchIn[index];
@@ -24,6 +27,8 @@ mixin FollowAnalyzer on AbstractAnalyzer {
     return -1;
   }
 
+  /// Recursive function that receives a productions map and generates
+  /// the follow set for each production
   SymbolSet followOf(
     String productionName,
     ProductionsMap allProductions, {

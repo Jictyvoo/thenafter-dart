@@ -5,8 +5,10 @@ import 'package:thenafter_dart/src/models/value/grammar_information.dart';
 import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
+/// The code generator that outputs a code using dart constraints
 class DartGenerator extends AbstractCodeGenerator
     implements CodeGeneratorInterface {
+
   String buildImports() {
     return '';
   }
