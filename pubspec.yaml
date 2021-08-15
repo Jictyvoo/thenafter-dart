@@ -1,10 +1,11 @@
 name: thenafter_dart
-description: Produces synthatic functions from a grammar
-version: 0.0.1
-author: João Victor Oliveira Couto
+description: Parses the BNF .grm file and produces the first and follow sets.
+  It can be used also to generate first and follow sets in a set of different languages.
+version: 0.5.0
+repository: https://github.com/Jictyvoo/thenafter-dart
 
 environment:
-  sdk: ">=2.13.1 <3.0.0"
+  sdk: '>=2.13.1 <3.0.0'
 
 dependencies:
   args: ^2.1.1

@@ -11,8 +11,17 @@ linter:
     - hash_and_equals
     - iterable_contains_unrelated_type
     - list_remove_unrelated_type
+    - package_names
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - prefer_final_locals
+    - prefer_typing_uninitialized_variables
+    - provide_deprecation_message
+    - public_member_api_docs
     - test_types_in_equals
     - unnecessary_const
     - unnecessary_new
+    - unnecessary_string_interpolations
     - unrelated_type_equality_checks
+    - use_string_buffers
     - valid_regexps
