@@ -1,4 +1,4 @@
-include: package:pedantic/analysis_options.yaml
+include: package:lints/recommended.yaml
 
 analyzer:
   exclude: [ build/** ]
@@ -6,6 +6,8 @@ analyzer:
 # Lint rules and documentation, see http://dart-lang.github.io/linter/lints
 linter:
   rules:
+    - always_declare_return_types
+    - prefer_single_quotes
     - cancel_subscriptions
     - camel_case_types
     - hash_and_equals
