@@ -5,6 +5,14 @@ import '../abstract_analyzer.dart';
 
 /// A analyzer that analysis a input and generates a first-set
 mixin FirstAnalyzer on AbstractAnalyzer {
+  bool _checkHasEmpty(final SymbolSet symbolSet) {
+    // return symbolSet.contains(emptyEpsilon);
+    for (final symbol in symbolSet) {
+      if (valueIsEmpty(symbol)) return true;
+    }
+    return false;
+  }
+
   /// Recursive function that receives a productions map and generates
   /// the first set for each production
   SymbolSet firstOf(
@@ -31,9 +39,13 @@ mixin FirstAnalyzer on AbstractAnalyzer {
             firstList,
           );
           joinSets(firstSet, firstOfSubProduction);
+
+          final hasEmpty = _checkHasEmpty(firstOfSubProduction);
           // if sub production doesn't have a empty first, stop loop
-          if (!firstOfSubProduction.contains('')) {
+          if (!hasEmpty) {
             count = production.length + 1;
+          } else if (count == production.length - 1) {
+            firstSet.add(emptyEpsilon);
           }
         } else {
           // if during the loop it gets a terminal symbol, add it to first set

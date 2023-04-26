@@ -18,3 +18,6 @@ typedef ProductionTerminals = Map<String, SymbolSet>;
 
 /// Iterator for input that receives character by character
 typedef InputIterator = Iterable<int>;
+
+/// The default empty value used by all analyzers when checking for empty
+const emptyEpsilon = '';

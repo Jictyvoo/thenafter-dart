@@ -64,14 +64,14 @@ abstract class AbstractAnalyzer {
 
   /// Must return a string with single quote
   String sanitizeTerminal(String original, [final bool wrapInQuote = false]) {
-    if (original.isEmpty || original == '"') {
-      return "'$original'";
+    if (original == '"') {
+      return "'\"'";
     } else if (original == "'") {
       return '"\'"';
     }
 
     var result = original;
-    if (StringHelper.isQuotes(original.codeUnitAt(0))) {
+    if (original.isNotEmpty && StringHelper.isQuotes(original.codeUnitAt(0))) {
       result = replaceQuote(original);
     } else if (wrapInQuote) {
       result = "'$original'";
