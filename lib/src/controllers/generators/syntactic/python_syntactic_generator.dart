@@ -7,7 +7,7 @@ import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
 /// A PythonCodeGenerator.
-class PythonGenerator extends AbstractCodeGenerator
+class SyntacticPythonGenerator extends AbstractCodeGenerator
     implements SyntacticGeneratorInterface {
   @override
   void buildNeededImports(StringBuffer buffer) {

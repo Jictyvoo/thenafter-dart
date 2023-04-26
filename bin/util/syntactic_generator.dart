@@ -7,7 +7,7 @@ void generateSyntacticFile(
   GrammarInformation parseResult,
   FirstFollowResult result,
 ) {
-  final generator = PythonGenerator();
+  final generator = SyntacticPythonGenerator();
   final fileBuffer = StringBuffer();
   final givenInfo = <String, String>{
     'Identifier': 'TokenTypes.IDENTIFIER',
