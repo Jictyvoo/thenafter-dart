@@ -26,24 +26,49 @@ void _firstTest(
 void main() {
   test('test first set generation from `expression` grammar', () {
     const expectedFirst = {
-      '(',
-      '0',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '*',
-      '/',
-      '+',
-      '-',
-      ''
+      '<expr>': {
+        '(',
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '*',
+        '/',
+        '+',
+        '-',
+        ''
+      },
+      '<term>': {
+        '(',
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '*',
+        '/',
+        ''
+      },
+      '<factor>': {'(', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'},
+      '<number>': {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'},
+      '<digit>': {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'},
+      "<expr'>": {'+', '-', ''},
+      "<term'>": {'*', '/', ''},
     };
-    _firstTest(expressionProductions, '<expr>', expected: expectedFirst);
+    for (final entry in expectedFirst.entries) {
+      _firstTest(expressionProductions, entry.key, expected: entry.value);
+    }
   });
 
   test('test first set generation from `basic` grammar', () {
