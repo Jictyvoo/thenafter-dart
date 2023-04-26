@@ -4,6 +4,7 @@ import 'package:args/args.dart';
 import 'package:thenafter_dart/thenafter_dart.dart';
 
 import 'generator_cmd.dart' as generator;
+import 'formatter_cmd.dart' as formatter;
 import 'util/args_types.dart';
 import 'util/syntactic_generator.dart';
 
@@ -61,11 +62,18 @@ void main(List<String> args) {
       'Finished in ${DateTime.now().difference(startTime).inMicroseconds} '
       'microseconds parse for file $fileName',
     );
+
     final commandName = _stringToCommand(argResults.command?.name);
-    if (commandName == ArgsCommands.generated) {
-      generator.execute(argResults, parseResult, result, fileName);
-    } else {
-      generateSyntacticFile(parseResult, result);
+    switch (commandName) {
+      case ArgsCommands.generated:
+        generator.execute(argResults, parseResult, result, fileName);
+        break;
+      case ArgsCommands.format:
+        formatter.execute(fileName, parseResult);
+        break;
+      default:
+        generateSyntacticFile(parseResult, result);
+        break;
     }
   }
 }

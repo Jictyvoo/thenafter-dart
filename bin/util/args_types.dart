@@ -1,4 +1,4 @@
-enum ArgsCommands { generated, syntactic }
+enum ArgsCommands { generated, syntactic, format }
 
 extension ArgsCommandsUtil on ArgsCommands {
   String get value {
@@ -7,6 +7,8 @@ extension ArgsCommandsUtil on ArgsCommands {
         return 'generate';
       case ArgsCommands.syntactic:
         return 'syntactic';
+      case ArgsCommands.format:
+        return 'fmt';
     }
   }
 }
