@@ -21,7 +21,8 @@ StringBuffer generateFileContents(
     case OutputLanguage.java:
       throw UnimplementedError('Java language generator unimplemented');
     case OutputLanguage.python:
-      throw UnimplementedError('Python language generator unimplemented');
+     generator = PythonGenerator();
+     break;
     case OutputLanguage.vlang:
       throw UnimplementedError('V language generator unimplemented');
   }
