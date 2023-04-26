@@ -53,23 +53,30 @@ class BNFSyntactic {
       productionList.add(<Token>[]);
     }
     final subProductions = productionList.last;
-    if (token.tokenType == TokenType.operator && token.lexeme == '|') {
-      productionList.add(<Token>[]);
-      if (subProductions.isEmpty) {
-        // add empty production in case production is already empty
-        subProductions.add(Token.empty);
-      }
-    } else if (previousToken.tokenType == TokenType.production &&
-        token.tokenType == TokenType.operator &&
-        token.lexeme == '::=') {
-      if (subProductions.isNotEmpty) {
+    if (token.tokenType == TokenType.operator) {
+      // Check if it's another attribution and then call another state
+      if (previousToken.tokenType == TokenType.genericTerminal &&
+          token.lexeme == '=') {
         subProductions.removeLast();
+        _discoverState(previousToken, token);
+        return;
+      } else if (token.lexeme == '|') {
+        productionList.add(<Token>[]);
+        if (subProductions.isEmpty) {
+          // add empty production in case production is already empty
+          subProductions.add(Token.empty);
+        }
+      } else if (previousToken.tokenType == TokenType.production &&
+          token.lexeme == '::=') {
+        if (subProductions.isNotEmpty) {
+          subProductions.removeLast();
+        }
+        if (subProductions.isEmpty) {
+          // in case last production is empty, add a empty string
+          subProductions.add(Token.empty);
+        }
+        _leftSideToken = previousToken;
       }
-      if (subProductions.isEmpty) {
-        // in case last production is empty, add a empty string
-        subProductions.add(Token.empty);
-      }
-      _leftSideToken = previousToken;
     } else {
       subProductions.add(token);
     }
@@ -86,6 +93,20 @@ class BNFSyntactic {
     }
   }
 
+  void _discoverState(final Token previousToken, final Token token) {
+    if (token.tokenType == TokenType.operator) {
+      _leftSideToken = previousToken;
+      if (token.lexeme == '=') {
+        _state = SyntacticState.openedAttribution;
+      } else if (token.lexeme == '::=') {
+        if (previousToken.tokenType != TokenType.production) {
+          throw ('$previousToken is not a production, please fix your grammar');
+        }
+        _state = SyntacticState.openedProduction;
+      }
+    }
+  }
+
   /// Start parsing a token list and organize it's information
   void start(List<Token> tokenList) {
     var previousToken = Token.empty;
@@ -96,17 +117,7 @@ class BNFSyntactic {
         continue iterateTokens;
       }
       if (_state == SyntacticState.nil) {
-        if (token.tokenType == TokenType.operator) {
-          _leftSideToken = previousToken;
-          if (token.lexeme == '=') {
-            _state = SyntacticState.openedAttribution;
-          } else if (token.lexeme == '::=') {
-            if (previousToken.tokenType != TokenType.production) {
-              throw ('$previousToken is not a production, please fix your grammar');
-            }
-            _state = SyntacticState.openedProduction;
-          }
-        }
+        _discoverState(previousToken, token);
       } else {
         _delegateState(previousToken, token);
       }
