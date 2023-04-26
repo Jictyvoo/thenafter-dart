@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:thenafter_dart/thenafter_dart.dart';
 
-import 'controllers/delegate_generator_language.dart';
+import 'generator_cmd.dart' as generator;
 import 'util/args_types.dart';
-import 'util/output_languages.dart';
 import 'util/syntactic_generator.dart';
 
 ArgParser _configureArgParser() {
@@ -28,7 +27,8 @@ ArgParser _configureArgParser() {
           mandatory: false,
         ),
     )
-    ..addCommand(ArgsCommands.syntactic.value);
+    ..addCommand(ArgsCommands.syntactic.value)
+    ..addCommand(ArgsCommands.format.value);
 }
 
 ArgsCommands _stringToCommand(String? value) {
@@ -38,15 +38,6 @@ ArgsCommands _stringToCommand(String? value) {
     }
   }
   return ArgsCommands.generated;
-}
-
-OutputLanguage _stringToLanguage(String value) {
-  for (final language in OutputLanguage.values) {
-    if (language.name == value || language.extension == value) {
-      return language;
-    }
-  }
-  return OutputLanguage.dart;
 }
 
 void main(List<String> args) {
@@ -72,19 +63,7 @@ void main(List<String> args) {
     );
     final commandName = _stringToCommand(argResults.command?.name);
     if (commandName == ArgsCommands.generated) {
-      final generateProductions =
-          argResults.command?[GeneratedOptions.productions.value] ?? false;
-      final outputLanguage =
-          argResults.command?[GeneratedOptions.language.value] ?? 'lua';
-      final selectedLanguage = _stringToLanguage(outputLanguage);
-      final contentsBuffer = generateFileContents(
-        selectedLanguage,
-        parseResult,
-        result,
-        generateProductions,
-      );
-      final file = File('$fileName.${selectedLanguage.extension}');
-      file.writeAsStringSync(contentsBuffer.toString());
+      generator.execute(argResults, parseResult, result, fileName);
     } else {
       generateSyntacticFile(parseResult, result);
     }
