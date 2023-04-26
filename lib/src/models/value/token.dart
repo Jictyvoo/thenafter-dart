@@ -51,6 +51,14 @@ class Token {
   /// all required fields
   const Token(this.lexeme, this.lineNumber, this.columnNumber, this.tokenType);
 
+  /// A shorthand constructor that creates a [Token] with a single lexeme and
+  /// token type. It is equivalent to calling the Token constructor with the
+  /// provided [lexeme] and [tokenType], and zeroing the
+  /// [lineNumber] and [columnNumber].
+  const Token.simple(this.lexeme, this.tokenType)
+      : lineNumber = 0,
+        columnNumber = 0;
+
   @override
   String toString() {
     return '$lineNumber:$columnNumber `$lexeme` <$tokenType>';
