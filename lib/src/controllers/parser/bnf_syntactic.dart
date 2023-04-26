@@ -43,12 +43,22 @@ class BNFSyntactic {
     _state = SyntacticState.nil;
   }
 
-  void _productionState(Token previousToken, Token token) {
+  bool get _hasSubProduction {
+    return productions.containsKey(_leftSideToken.lexeme);
+  }
+
+  /// Return the current production list that is used
+  SubProductionsList get currentProductionList {
     final productionList =
         productions[_leftSideToken.lexeme] ?? <List<Token>>[];
-    if (!productions.containsKey(_leftSideToken.lexeme)) {
+    if (!_hasSubProduction) {
       productions[_leftSideToken.lexeme] = productionList;
     }
+    return productionList;
+  }
+
+  void _productionState(Token previousToken, Token token) {
+    final productionList = currentProductionList;
     if (productionList.isEmpty) {
       productionList.add(<Token>[]);
     }
@@ -76,6 +86,13 @@ class BNFSyntactic {
           subProductions.add(Token.empty);
         }
         _leftSideToken = previousToken;
+
+        // If the production is declared more than one time, it will add all
+        // other declarations as a sub-production
+        final newProduction = currentProductionList;
+        if (newProduction.isNotEmpty) {
+          newProduction.add(<Token>[]);
+        }
       }
     } else {
       subProductions.add(token);
