@@ -99,7 +99,17 @@ class BNFLexical {
         '`${_lexicalInformation.generateToken(TokenType.production)}`',
       );
     } else if (character == CHAR_GREATER_THAN) {
-      tokenList.add(_lexicalInformation.generateToken(TokenType.production));
+      var tokenType = TokenType.production;
+      int? emptyCharacter;
+
+      if (_lexicalInformation.lexeme == '<>') {
+        tokenType = TokenType.terminal;
+        emptyCharacter = 0;
+      }
+
+      tokenList.add(
+        _lexicalInformation.generateToken(tokenType, emptyCharacter),
+      );
     }
   }
 

@@ -96,7 +96,9 @@ class LexicalInformation {
   /// clear lexemeBuilder and set state to nil
   Token generateToken(TokenType tokenType, [int? fromCharacter]) {
     final finalLexeme = fromCharacter != null
-        ? String.fromCharCode(fromCharacter)
+        ? (fromCharacter == 0
+            ? Token.empty.lexeme
+            : String.fromCharCode(fromCharacter))
         : _lexemeBuilder.toString().trim();
     final newToken = Token(
       finalLexeme,
