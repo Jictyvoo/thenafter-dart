@@ -112,6 +112,7 @@ class BNFLexical {
       tokenList.add(
         _lexicalInformation.generateToken(TokenType.genericTerminal),
       );
+      _discoverState(character);
     }
   }
 
@@ -136,6 +137,53 @@ class BNFLexical {
     }
   }
 
+  void _discoverState(int character) {
+    if (character == CHAR_LESS_THAN) {
+      // begin PRODUCTION
+      _lexicalInformation.addCharacter(character);
+      _lexicalInformation.state = LexicalStates.production;
+    } else if (character == CHAR_COLON) {
+      // begin OPERATOR
+      _lexicalInformation.addCharacter(character);
+      _lexicalInformation.state = LexicalStates.operator;
+    } else if (character == CHAR_VERTICAL_SLASH) {
+      // save VERTICAL_SLASH operator as a new Token
+      tokenList.add(
+        _lexicalInformation.generateToken(TokenType.operator, character),
+      );
+    } else if (character == CHAR_EQUAL) {
+      // save EQUAL operator as a new token and  begin ATTRIBUTION
+      tokenList.add(
+        _lexicalInformation.generateToken(TokenType.operator, character),
+      );
+      _lexicalInformation.state = LexicalStates.attribution;
+    } else if (character == CHAR_EXCLAMATION) {
+      // begin COMMENT
+      _lexicalInformation.addCharacter(character);
+      _lexicalInformation.state = LexicalStates.comment;
+    } else if (character == CHAR_SINGLE_QUOTE || character == CHAR_QUOTES) {
+      // begin STRING
+      _lexicalInformation.addCharacter(character);
+      _lexicalInformation.state = LexicalStates.string;
+    } else if (StringHelper.isAlphabetic(character) ||
+        StringHelper.isUnderline(character)) {
+      // begin IDENTIFIER
+      _lexicalInformation.addCharacter(character);
+      _lexicalInformation.state = LexicalStates.identifier;
+    } else if (character == CHAR_OPEN_BRACKETS) {
+      // begin CHARACTER_SET
+      _lexicalInformation.addCharacter(character);
+      _lexicalInformation.state = LexicalStates.characterSet;
+    } else if (!StringHelper.isWhitespace(character) &&
+        !StringHelper.isNewline(character)) {
+      errorList.add(
+        'Unknown symbol '
+        '${_lexicalInformation.lineNumber}:${_lexicalInformation.column} '
+        '`${String.fromCharCode(character)}`',
+      );
+    }
+  }
+
   /// Starts the parse using a iterator as input.
   /// At the end, returns all tokens identified
   List<Token> start(InputIterator input) {
@@ -143,50 +191,7 @@ class BNFLexical {
     for (final character in input) {
       _lexicalInformation.column += 1;
       if (_lexicalInformation.state == LexicalStates.nil) {
-        if (character == CHAR_LESS_THAN) {
-          // begin PRODUCTION
-          _lexicalInformation.addCharacter(character);
-          _lexicalInformation.state = LexicalStates.production;
-        } else if (character == CHAR_COLON) {
-          // begin OPERATOR
-          _lexicalInformation.addCharacter(character);
-          _lexicalInformation.state = LexicalStates.operator;
-        } else if (character == CHAR_VERTICAL_SLASH) {
-          // save VERTICAL_SLASH operator as a new Token
-          tokenList.add(
-            _lexicalInformation.generateToken(TokenType.operator, character),
-          );
-        } else if (character == CHAR_EQUAL) {
-          // save EQUAL operator as a new token and  begin ATTRIBUTION
-          tokenList.add(
-            _lexicalInformation.generateToken(TokenType.operator, character),
-          );
-          _lexicalInformation.state = LexicalStates.attribution;
-        } else if (character == CHAR_EXCLAMATION) {
-          // begin COMMENT
-          _lexicalInformation.addCharacter(character);
-          _lexicalInformation.state = LexicalStates.comment;
-        } else if (character == CHAR_SINGLE_QUOTE || character == CHAR_QUOTES) {
-          // begin STRING
-          _lexicalInformation.addCharacter(character);
-          _lexicalInformation.state = LexicalStates.string;
-        } else if (StringHelper.isAlphabetic(character) ||
-            StringHelper.isUnderline(character)) {
-          // begin IDENTIFIER
-          _lexicalInformation.addCharacter(character);
-          _lexicalInformation.state = LexicalStates.identifier;
-        } else if (character == CHAR_OPEN_BRACKETS) {
-          // begin CHARACTER_SET
-          _lexicalInformation.addCharacter(character);
-          _lexicalInformation.state = LexicalStates.characterSet;
-        } else if (!StringHelper.isWhitespace(character) &&
-            !StringHelper.isNewline(character)) {
-          errorList.add(
-            'Unknown symbol '
-            '${_lexicalInformation.lineNumber}:${_lexicalInformation.column} '
-            '`${String.fromCharCode(character)}`',
-          );
-        }
+        _discoverState(character);
       } else {
         _delegateState(character, previousCharacter);
       }
