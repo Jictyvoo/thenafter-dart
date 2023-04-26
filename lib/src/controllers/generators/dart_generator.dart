@@ -34,7 +34,7 @@ class DartGenerator extends AbstractCodeGenerator
         if (subIndex > 0) {
           buffer.write(',\n');
         }
-        final sanitized = sanitizeTerminal(subProductions);
+        final sanitized = sanitizeTerminal(subProductions, true);
         buffer.write('\t\t\t${replaceQuote(
           sanitized == "'\$'" ? "'\\\$'" : sanitized,
           CHAR_SINGLE_QUOTE,

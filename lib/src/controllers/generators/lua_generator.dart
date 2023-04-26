@@ -35,7 +35,7 @@ class LuaGenerator extends AbstractCodeGenerator
           buffer.write(',\n');
         }
         buffer.write('\t\t\t${replaceQuote(
-          sanitizeTerminal(subProductions),
+          sanitizeTerminal(subProductions, true),
           CHAR_QUOTES,
         )}');
         subIndex += 1;
