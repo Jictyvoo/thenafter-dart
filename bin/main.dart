@@ -24,7 +24,7 @@ ArgParser _configureArgParser() {
           GeneratedOptions.language.value,
           abbr: GeneratedOptions.language.abbreviation,
           help: 'Choose the output language for first, follow and productions',
-          defaultsTo: 'v',
+          defaultsTo: 'dart',
           mandatory: false,
         ),
     )
@@ -46,14 +46,16 @@ OutputLanguage _stringToLanguage(String value) {
       return language;
     }
   }
-  return OutputLanguage.lua;
+  return OutputLanguage.dart;
 }
 
 void main(List<String> args) {
   // configure parser, parse args and get it's values
   final argsParser = _configureArgParser();
   final argResults = argsParser.parse(args);
-  for (final fileName in argResults.command?.rest ?? ['grammar.grm']) {
+  final fileList = argResults.command?.rest ?? [];
+
+  for (final fileName in fileList.isEmpty ? ['grammar.grm'] : fileList) {
     if (!fileName.endsWith('.grm')) {
       continue;
     }
