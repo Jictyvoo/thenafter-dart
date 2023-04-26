@@ -58,26 +58,26 @@ class DartGenerator extends AbstractCodeGenerator
       if (index > 0) {
         buffer.write(',\n');
       }
-      buffer.write('\t\t"${entry.key}" : {\n');
+      buffer.write("\t\t'${entry.key}' : [\n");
       // Sub-productions foreach
       var subIndex = 0;
       for (final subProductions in entry.value) {
         if (subIndex > 0) {
           buffer.write(',\n');
         }
-        buffer.write('\t\t\t{');
+        buffer.write('\t\t\t[');
         var counter = 0;
         for (final singleProduction in subProductions) {
           if (counter > 0) {
             buffer.write(', ');
           }
-          buffer.write('"${singleProduction.lexeme}"');
+          buffer.write(sanitizeTerminal(singleProduction.lexeme, true));
           counter += 1;
         }
-        buffer.write('}');
+        buffer.write(']');
         subIndex += 1;
       }
-      buffer.write('\n\t\t}');
+      buffer.write('\n\t\t]');
       index += 1;
     }
     buffer.write('\n\t}');

@@ -52,6 +52,9 @@ abstract class AbstractAnalyzer {
         }
         buffer.writeCharCode(desiredCharacter);
       } else {
+        if (character == desiredCharacter) {
+          buffer.write('\\');
+        }
         buffer.writeCharCode(character);
       }
       index += 1;
@@ -60,15 +63,20 @@ abstract class AbstractAnalyzer {
   }
 
   /// Must return a string with single quote
-  String sanitizeTerminal(String original) {
+  String sanitizeTerminal(String original, [final bool wrapInQuote = false]) {
     if (original.isEmpty || original == '"') {
       return "'$original'";
     } else if (original == "'") {
       return '"\'"';
     }
-    if (!StringHelper.isQuotes(original.codeUnitAt(0))) {
-      return original;
+
+    var result = original;
+    if (StringHelper.isQuotes(original.codeUnitAt(0))) {
+      result = replaceQuote(original);
+    } else if (wrapInQuote) {
+      result = "'$original'";
     }
-    return replaceQuote(original);
+
+    return result;
   }
 }
