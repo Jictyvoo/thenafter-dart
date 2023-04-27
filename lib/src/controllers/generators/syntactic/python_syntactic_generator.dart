@@ -31,7 +31,7 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
 
   @override
   String genFunctionName(String productionName) {
-    return 'sp_' + sanitizeName(productionName);
+    return 'sp_${sanitizeName(productionName)}';
   }
 
   @override
@@ -136,7 +136,7 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
       }
 
       // In case failed the predict, add error to list
-      if (!firstSet.contains('')) {
+      if (!firstSet.contains(emptyEpsilon)) {
         var expectedTokens = '[${sanitizeTerminal(production.lexeme)}]';
         if (subIsProduction) {
           expectedTokens = localFirstSetName;
@@ -228,7 +228,7 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
         buffer.writeln('se:\n\t\treturn node');
       }
       // Sub productions foreach
-      final tabAmount = firstSet.contains('') ? 1 : 2;
+      final tabAmount = firstSet.contains(emptyEpsilon) ? 1 : 2;
       buffer.writeln(
         _buildVerifications(
           name,

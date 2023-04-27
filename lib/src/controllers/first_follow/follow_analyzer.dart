@@ -62,7 +62,7 @@ mixin FollowAnalyzer on AbstractAnalyzer {
           final aheadSymbol = producerProduction[counter][index];
           final aheadFirstSet = getFirst(aheadSymbol.lexeme, firstList);
           joinSets(followSet, aheadFirstSet);
-          if (aheadFirstSet.contains("''") || aheadFirstSet.contains('')) {
+          if (aheadFirstSet.contains(emptyEpsilon)) {
             getProducedByFollow = true;
           }
         } else {

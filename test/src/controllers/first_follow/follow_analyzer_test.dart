@@ -10,8 +10,6 @@ class TestSubject_Follow extends AbstractAnalyzer with FollowAnalyzer {}
 
 void main() {
   test('test if follow set is generating well', () {
-    final followAnalyzer = TestSubject_Follow();
-
     // Generate needed info
     const ProductionTerminals firstList = {
       '<S>': {'a'},
@@ -33,6 +31,7 @@ void main() {
     };
 
     // Test followOf function
+    final followAnalyzer = TestSubject_Follow();
     for (final entry in basicProductions.entries) {
       if (entry.key == '<S>') {
         continue;
