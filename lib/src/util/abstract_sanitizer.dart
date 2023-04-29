@@ -55,4 +55,49 @@ mixin AbstractSanitizer {
 
     return result;
   }
+
+  /// Takes a string identifier and normalizes it to a specified case format.
+  /// The options for case formats are [camelCase], [snakeCase], and [pascalCase].
+  /// Only one of these options can be set to true at a time,
+  /// otherwise an assertion error will be thrown.
+  String normalizeIdentifier(
+    final String identifier, {
+    final bool camelCase = false,
+    final bool snakeCase = false,
+    final bool pascalCase = false,
+  }) {
+    assert(
+      !(camelCase && snakeCase && pascalCase),
+      'only one parameter should be set to true',
+    );
+
+    final buffer = StringBuffer();
+    var index = 0;
+    var upperCaseAtIndex = pascalCase ? 0 : -1;
+    for (final character in identifier.codeUnits) {
+      if (index == 0 && camelCase) {
+        buffer.write(String.fromCharCode(character).toLowerCase());
+        index += 1;
+        continue;
+      }
+      if (StringHelper.isWhitespace(character)) {
+        if (pascalCase || camelCase) {
+          upperCaseAtIndex = index + 1;
+        } else if (snakeCase) {
+          buffer.write('_');
+        }
+        index += 1;
+        continue;
+      }
+
+      if (index == upperCaseAtIndex) {
+        buffer.write(String.fromCharCode(character).toUpperCase());
+      } else {
+        buffer.writeCharCode(character);
+      }
+      index += 1;
+    }
+
+    return snakeCase ? buffer.toString().toLowerCase() : buffer.toString();
+  }
 }
