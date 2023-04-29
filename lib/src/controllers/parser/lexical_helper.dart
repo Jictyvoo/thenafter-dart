@@ -1,5 +1,17 @@
 import 'package:thenafter_dart/src/models/value/token.dart';
 
+export 'package:thenafter_dart/src/util/helpers/string_constants.dart'
+    show
+        CHAR_EXCLAMATION,
+        CHAR_COLON,
+        CHAR_EQUAL,
+        CHAR_LESS_THAN,
+        CHAR_GREATER_THAN,
+        CHAR_BACK_SLASH,
+        CHAR_VERTICAL_SLASH,
+        CHAR_OPEN_BRACKETS,
+        CHAR_CLOSE_BRACKETS;
+
 /// All states for lexical parser
 enum LexicalStates {
   /// Null state, default
@@ -27,33 +39,6 @@ enum LexicalStates {
   /// A character set has been detected, parsing it until the end
   characterSet
 }
-
-/// ASCII code for character `!`
-const CHAR_EXCLAMATION = 33;
-
-/// ASCII code for character `:`
-const CHAR_COLON = 58;
-
-/// ASCII code for character `=`
-const CHAR_EQUAL = 61;
-
-/// ASCII code for character `<`
-const CHAR_LESS_THAN = 60;
-
-/// ASCII code for character `>`
-const CHAR_GREATER_THAN = 62;
-
-/// ASCII code for character `\`
-const CHAR_BACK_SLASH = 92;
-
-/// ASCII code for character `|`
-const CHAR_VERTICAL_SLASH = 124;
-
-/// ASCII code for character `{`
-const CHAR_OPEN_BRACKETS = 123;
-
-/// ASCII code for character `}`
-const CHAR_CLOSE_BRACKETS = 125;
 
 /// Stores all information needed about lexeme construction and Lexical state
 class LexicalInformation {

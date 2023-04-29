@@ -60,3 +60,30 @@ const UNKNOWN_WHITESPACE = <int>{
   0x205F,
   0x3000
 };
+
+/// ASCII code for character `!`
+const CHAR_EXCLAMATION = 33;
+
+/// ASCII code for character `:`
+const CHAR_COLON = 58;
+
+/// ASCII code for character `=`
+const CHAR_EQUAL = 61;
+
+/// ASCII code for character `<`
+const CHAR_LESS_THAN = 60;
+
+/// ASCII code for character `>`
+const CHAR_GREATER_THAN = 62;
+
+/// ASCII code for character `\`
+const CHAR_BACK_SLASH = 92;
+
+/// ASCII code for character `|`
+const CHAR_VERTICAL_SLASH = 124;
+
+/// ASCII code for character `{`
+const CHAR_OPEN_BRACKETS = 123;
+
+/// ASCII code for character `}`
+const CHAR_CLOSE_BRACKETS = 125;
