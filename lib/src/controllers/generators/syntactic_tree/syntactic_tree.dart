@@ -4,7 +4,9 @@ import 'package:thenafter_dart/src/controllers/parser/lexical_helper.dart';
 import 'package:thenafter_dart/src/models/value/grammar_information.dart';
 import 'package:thenafter_dart/src/models/value/token.dart';
 
-///
+/// Provides functionality for generating syntactic tree definitions for
+/// a given grammar. It includes methods to generate class and field definitions,
+/// and a method to generate all definitions for a given grammar.
 mixin SyntacticTreeGenerator {
   // TODO: Create to check and mark complex type as reference
   final _usedBy = <String, List<String>>{};
