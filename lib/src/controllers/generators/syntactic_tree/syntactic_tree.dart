@@ -4,6 +4,7 @@ import 'package:thenafter_dart/src/models/value/grammar_information.dart';
 import 'package:thenafter_dart/src/models/value/token.dart';
 import 'package:thenafter_dart/src/util/helpers/string_constants.dart'
     show CHAR_LESS_THAN, CHAR_GREATER_THAN;
+import 'package:thenafter_dart/src/util/types_util.dart';
 
 /// Provides functionality for generating syntactic tree definitions for
 /// a given grammar. It includes methods to generate class and field definitions,
@@ -118,7 +119,7 @@ mixin SyntacticTreeGenerator {
           final firstTokenName =
               production.isNotEmpty ? production.first.lexeme : 'first';
           final subClassName =
-              '$className Definition ${firstTokenName}_${helperID++}';
+              '$className Definition ${_sanitizeProductionName(firstTokenName)}_${helperID++}';
           if (resultFields.isNotEmpty) {
             classList.add(ClassDefinition(subClassName, resultFields));
             fields.add(
@@ -130,6 +131,21 @@ mixin SyntacticTreeGenerator {
           }
         } else {
           fields.addAll(resultFields);
+        }
+      }
+
+      // if has no fields, it can have only terminals
+      if (fields.isEmpty) {
+        final isOnlyTerminal = entry.value.every(
+          (element) =>
+              element.length == 1 &&
+              (element.first.tokenType == TokenType.terminal ||
+                  element.first.lexeme == emptyEpsilon),
+        );
+        if (isOnlyTerminal) {
+          fields.add(
+            const FieldDefinition('Value', FieldType(BasicTypes.string)),
+          );
         }
       }
       classList.add(ClassDefinition(className, fields));
