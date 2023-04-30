@@ -72,27 +72,28 @@ mixin SyntacticTreeGenerator {
     required String producedBy,
   }) {
     final repeatedTerminals = <String, int>{};
-    final resultList = <FieldDefinition>[
-      for (final token in tokenList)
-        if (token.tokenType == TokenType.production)
-          FieldDefinition(
-            _sanitizeProductionName(token.lexeme),
-            FieldType(
-              BasicTypes.custom,
-              customTypeName: _sanitizeProductionName(token.lexeme),
-              complexType: _sanitizeProductionName(token.lexeme) == producedBy
-                  ? ComplexType.reference
-                  : ComplexType.none,
-            ),
-          )
-        else if (token.tokenType == TokenType.genericTerminal &&
-            extraDefinitions.keys.contains(token.lexeme))
-          FieldDefinition(
-            '${_sanitizeProductionName(token.lexeme)} Value ${_numericTerminal(token.lexeme, repeatedTerminals)}',
-            const FieldType(BasicTypes.string),
-          )
-    ];
+    final resultList = <FieldDefinition>[];
+    for (final token in tokenList) {
+      var fieldName = _sanitizeProductionName(token.lexeme);
+      var fieldType = const FieldType(BasicTypes.string);
+      if (token.tokenType == TokenType.production) {
+        fieldType = FieldType(
+          BasicTypes.custom,
+          customTypeName: fieldName,
+          complexType: fieldName == producedBy
+              ? ComplexType.reference
+              : ComplexType.none,
+        );
+      } else if (token.tokenType == TokenType.genericTerminal &&
+          extraDefinitions.keys.contains(token.lexeme)) {
+        fieldName =
+            '$fieldName Value ${_numericTerminal(token.lexeme, repeatedTerminals)}';
+      } else {
+        continue;
+      }
 
+      resultList.add(FieldDefinition(fieldName, fieldType));
+    }
     return resultList;
   }
 
