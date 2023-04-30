@@ -84,6 +84,7 @@ mixin AbstractSanitizer {
     final buffer = StringBuffer();
     var index = 0;
     var upperCaseAtIndex = format == IdentifierFormat.pascalCase ? 0 : -1;
+    var addUnderscore = false;
     for (final character in identifier.codeUnits) {
       if (index == 0 && format == IdentifierFormat.camelCase) {
         buffer.write(String.fromCharCode(character).toLowerCase());
@@ -96,13 +97,17 @@ mixin AbstractSanitizer {
         if (format == IdentifierFormat.pascalCase ||
             format == IdentifierFormat.camelCase) {
           upperCaseAtIndex = index + 1;
-        } else if (format == IdentifierFormat.snakeCase) {
-          buffer.write('_');
         }
+
+        addUnderscore = format == IdentifierFormat.snakeCase;
         index += 1;
         continue;
       }
 
+      if (addUnderscore) {
+        buffer.write('_');
+        addUnderscore = false;
+      }
       if (index == upperCaseAtIndex) {
         buffer.write(String.fromCharCode(character).toUpperCase());
       } else {
