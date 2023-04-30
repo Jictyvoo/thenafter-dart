@@ -13,28 +13,32 @@ extension ArgsCommandsUtil on ArgsCommands {
   }
 }
 
-enum GeneratedOptions { productions, language, all }
+enum GeneratedOptions { all, productions, language, abstractSyntaxTree }
 
 extension GeneratedOptionsUtil on GeneratedOptions {
   String get value {
     switch (this) {
+      case GeneratedOptions.all:
+        return 'all';
       case GeneratedOptions.productions:
         return 'productions';
       case GeneratedOptions.language:
         return 'language';
-      case GeneratedOptions.all:
-        return 'all';
+      case GeneratedOptions.abstractSyntaxTree:
+        return 'ast';
     }
   }
 
   String get abbreviation {
     switch (this) {
+      case GeneratedOptions.all:
+        return 'a';
       case GeneratedOptions.productions:
         return 'p';
       case GeneratedOptions.language:
         return 'l';
-      case GeneratedOptions.all:
-        return 'a';
+      case GeneratedOptions.abstractSyntaxTree:
+        return '';
     }
   }
 }

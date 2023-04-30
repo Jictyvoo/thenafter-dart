@@ -7,7 +7,7 @@ import 'controllers/delegate_generator_language.dart';
 import 'util/args_types.dart';
 import 'util/output_languages.dart';
 
-OutputLanguage _stringToLanguage(String value) {
+OutputLanguage stringToLanguage(String value) {
   for (final language in OutputLanguage.values) {
     if (language.name == value || language.extension == value) {
       return language;
@@ -24,9 +24,10 @@ void execute(
 ) {
   final generateProductions =
       argResults.command?[GeneratedOptions.productions.value] ?? false;
-  final outputLanguage =
-      argResults.command?[GeneratedOptions.language.value] ?? 'lua';
-  final selectedLanguage = _stringToLanguage(outputLanguage);
+  final outputLanguage = argResults.command?[GeneratedOptions.language.value];
+  final selectedLanguage = stringToLanguage(
+    outputLanguage ?? OutputLanguage.dart.extension,
+  );
   final contentsBuffer = generateFileContents(
     selectedLanguage,
     parseResult,

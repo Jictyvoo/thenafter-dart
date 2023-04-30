@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:thenafter_dart/thenafter_dart.dart';
 
-import 'generator_cmd.dart' as generator;
+import 'ast_generator_cmd.dart' as ast_generator;
 import 'formatter_cmd.dart' as formatter;
+import 'generator_cmd.dart' as generator;
 import 'util/args_types.dart';
+import 'util/output_languages.dart';
 import 'util/syntactic_generator.dart';
 
 ArgParser _configureArgParser() {
@@ -20,10 +22,17 @@ ArgParser _configureArgParser() {
               'generate productions representation from .grm file',
           defaultsTo: false,
         )
+        ..addFlag(
+          GeneratedOptions.abstractSyntaxTree.value,
+          help: 'Indicates to the tool to generate the `Abstract Syntax Tree` '
+              'for the given grammar',
+          defaultsTo: false,
+        )
         ..addOption(
           GeneratedOptions.language.value,
           abbr: GeneratedOptions.language.abbreviation,
           help: 'Choose the output language for first, follow and productions',
+          allowed: [for (final lang in OutputLanguage.values) lang.extension],
           defaultsTo: 'dart',
           mandatory: false,
         ),
@@ -66,14 +75,20 @@ void main(List<String> args) {
     final commandName = _stringToCommand(argResults.command?.name);
     switch (commandName) {
       case ArgsCommands.generated:
+        final genAst =
+            argResults.command?[GeneratedOptions.abstractSyntaxTree.value];
+        if (genAst ?? false) {
+          ast_generator.execute(argResults, parseResult, result, fileName);
+          return;
+        }
         generator.execute(argResults, parseResult, result, fileName);
-        break;
+        return;
       case ArgsCommands.format:
         formatter.execute(fileName, parseResult);
-        break;
+        return;
       default:
         generateSyntacticFile(parseResult, result);
-        break;
+        return;
     }
   }
 }
