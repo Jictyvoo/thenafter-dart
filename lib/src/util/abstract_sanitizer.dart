@@ -1,6 +1,23 @@
 import 'helpers/string_constants.dart';
 import 'helpers/string_helper.dart';
 
+/// Defines the different formats that an identifier can be normalized into
+enum IdentifierFormat {
+  /// Represents identifiers that are written in lowerCamelCase style,
+  /// where the first word is in lowercase and subsequent
+  /// words start with a capital letter
+  camelCase,
+
+  /// Represents identifiers that are written in snake_case style, where
+  /// words are separated by an underscore and all words are in lowercase
+  snakeCase,
+
+  /// Represents identifiers that are written in UpperCamelCase style, where
+  /// the first word is in uppercase and subsequent
+  /// words start with a capital letter
+  pascalCase,
+}
+
 /// A mixin that contains most methods used to sanitize string values
 mixin AbstractSanitizer {
   /// Takes a quoted or unquoted string and replaces the quotes with the given
@@ -62,29 +79,24 @@ mixin AbstractSanitizer {
   /// otherwise an assertion error will be thrown.
   String normalizeIdentifier(
     final String identifier, {
-    final bool camelCase = false,
-    final bool snakeCase = false,
-    final bool pascalCase = false,
+    final IdentifierFormat format = IdentifierFormat.camelCase,
   }) {
-    assert(
-      !(camelCase && snakeCase && pascalCase),
-      'only one parameter should be set to true',
-    );
-
     final buffer = StringBuffer();
     var index = 0;
-    var upperCaseAtIndex = pascalCase ? 0 : -1;
+    var upperCaseAtIndex = format == IdentifierFormat.pascalCase ? 0 : -1;
     for (final character in identifier.codeUnits) {
-      if (index == 0 && camelCase) {
+      if (index == 0 && format == IdentifierFormat.camelCase) {
         buffer.write(String.fromCharCode(character).toLowerCase());
         index += 1;
         continue;
       }
       if (StringHelper.isWhitespace(character) ||
-          StringHelper.isHyphen(character)) {
-        if (pascalCase || camelCase) {
+          StringHelper.isHyphen(character) ||
+          StringHelper.isUnderline(character)) {
+        if (format == IdentifierFormat.pascalCase ||
+            format == IdentifierFormat.camelCase) {
           upperCaseAtIndex = index + 1;
-        } else if (snakeCase) {
+        } else if (format == IdentifierFormat.snakeCase) {
           buffer.write('_');
         }
         index += 1;
@@ -99,6 +111,8 @@ mixin AbstractSanitizer {
       index += 1;
     }
 
-    return snakeCase ? buffer.toString().toLowerCase() : buffer.toString();
+    return format == IdentifierFormat.snakeCase
+        ? buffer.toString().toLowerCase()
+        : buffer.toString();
   }
 }

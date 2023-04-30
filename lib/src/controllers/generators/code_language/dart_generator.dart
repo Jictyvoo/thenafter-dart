@@ -74,7 +74,7 @@ class DartGenerator with AbstractSanitizer, DartKeywords {
     }
     output.write(
       'const ${normalizeTypeName(fieldValue.definition.type)} '
-      '${normalizeIdentifier(fieldValue.definition.name, camelCase: true)} = $value;\n',
+      '${normalizeIdentifier(fieldValue.definition.name, format: IdentifierFormat.camelCase)} = $value;\n',
     );
   }
 
@@ -99,18 +99,18 @@ class DartGenerator with AbstractSanitizer, DartKeywords {
   void _writeClassDef(ClassDefinition classDef) {
     final className = normalizeIdentifier(
       normalizeCustomTypeName(classDef.name),
-      pascalCase: true,
+      format: IdentifierFormat.pascalCase,
     );
     output.write('class $className {\n');
 
     final constructorParams = <String>[];
     for (final field in classDef.fieldList) {
       final fieldName = preventReservedIdentifier(
-        normalizeIdentifier(field.name, camelCase: true),
+        normalizeIdentifier(field.name, format: IdentifierFormat.camelCase),
       );
       constructorParams.add(fieldName);
       output.write(
-        '\t${normalizeIdentifier(normalizeTypeName(field.type), pascalCase: true)} $fieldName;\n',
+        '\t${normalizeIdentifier(normalizeTypeName(field.type), format: IdentifierFormat.pascalCase)} $fieldName;\n',
       );
     }
 

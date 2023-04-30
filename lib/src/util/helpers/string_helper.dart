@@ -9,6 +9,9 @@ abstract class StringHelper {
 
   /// Remove quotes from the string that are in the start and the end
   static String removeQuotes(String target) {
+    if(target.isEmpty) {
+      return target;
+    }
     final lastCharacter = target.codeUnitAt(target.length - 1);
     final firstCharacter = target.codeUnitAt(0);
     if (lastCharacter != firstCharacter ||

@@ -27,6 +27,7 @@ const CHAR_TAB = 9;
 
 /// Whitespace character LF "\n"
 const CHAR_LINE_FEED = 10; // '\n' - LF
+
 /// Whitespace character vertical tab
 const CHAR_VERTICAL_TAB = 11;
 
@@ -35,6 +36,7 @@ const CHAR_FORM_FEED = 12;
 
 /// Whitespace character CR "\r"
 const CHAR_CARRIAGE_RETURN = 13; // '\r' - CR
+
 /// Whitespace character space " "
 const CHAR_SPACE = 32;
 
