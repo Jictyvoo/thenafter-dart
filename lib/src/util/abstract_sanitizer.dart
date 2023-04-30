@@ -80,7 +80,7 @@ mixin AbstractSanitizer {
         index += 1;
         continue;
       }
-      if (StringHelper.isWhitespace(character)) {
+      if (StringHelper.isWhitespace(character) || StringHelper.isHyphen(character)) {
         if (pascalCase || camelCase) {
           upperCaseAtIndex = index + 1;
         } else if (snakeCase) {

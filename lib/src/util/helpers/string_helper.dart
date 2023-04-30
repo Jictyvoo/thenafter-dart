@@ -72,6 +72,11 @@ abstract class StringHelper {
     return String.fromCharCode(rune) == '_';
   }
 
+  /// Checks if the given rune represents a hyphen
+  static bool isHyphen(int rune) {
+    return String.fromCharCode(rune) == '-';
+  }
+
   /// Checks if the given rune represents a new line
   static bool isNewline(int rune) {
     return String.fromCharCode(rune) == '\n' ||

@@ -1,8 +1,9 @@
 import 'package:thenafter_dart/src/controllers/generators/pieces/class.dart';
 import 'package:thenafter_dart/src/controllers/generators/pieces/field.dart';
-import 'package:thenafter_dart/src/controllers/parser/lexical_helper.dart';
 import 'package:thenafter_dart/src/models/value/grammar_information.dart';
 import 'package:thenafter_dart/src/models/value/token.dart';
+import 'package:thenafter_dart/src/util/helpers/string_constants.dart'
+    show CHAR_LESS_THAN, CHAR_GREATER_THAN;
 
 /// Provides functionality for generating syntactic tree definitions for
 /// a given grammar. It includes methods to generate class and field definitions,
@@ -55,10 +56,22 @@ mixin SyntacticTreeGenerator {
     return buffer.toString();
   }
 
+  String _numericTerminal(String element, Map<String, int> repeatedTerminals) {
+    if (!repeatedTerminals.containsKey(element)) {
+      repeatedTerminals[element] = 0;
+      return '';
+    }
+    var counter = repeatedTerminals[element] ?? 0;
+    repeatedTerminals[element] = ++counter;
+    return counter.toString().padLeft(2, '0');
+  }
+
   List<FieldDefinition> _createFields(
     Map<String, String> extraDefinitions,
-    List<Token> tokenList,
-  ) {
+    List<Token> tokenList, {
+    required String producedBy,
+  }) {
+    final repeatedTerminals = <String, int>{};
     final resultList = <FieldDefinition>[
       for (final token in tokenList)
         if (token.tokenType == TokenType.production)
@@ -67,12 +80,15 @@ mixin SyntacticTreeGenerator {
             FieldType(
               BasicTypes.custom,
               customTypeName: _sanitizeProductionName(token.lexeme),
+              complexType: _sanitizeProductionName(token.lexeme) == producedBy
+                  ? ComplexType.reference
+                  : ComplexType.none,
             ),
           )
         else if (token.tokenType == TokenType.genericTerminal &&
             extraDefinitions.keys.contains(token.lexeme))
           FieldDefinition(
-            _sanitizeProductionName(token.lexeme),
+            '${_sanitizeProductionName(token.lexeme)} Value ${_numericTerminal(token.lexeme, repeatedTerminals)}',
             const FieldType(BasicTypes.string),
           )
     ];
@@ -87,13 +103,15 @@ mixin SyntacticTreeGenerator {
     final classList = <ClassDefinition>[];
     for (final entry in grammar.productions.entries) {
       final className = _sanitizeProductionName(entry.key);
-      final shouldCreateHelperClasses = entry.value.length != 1;
+      final shouldCreateHelperClasses = entry.value.length != 1 &&
+          !(entry.value.length == 2 && entry.value.last.contains(Token.empty));
       final fields = <FieldDefinition>[];
       var helperID = 0;
       for (final production in entry.value) {
         final resultFields = _createFields(
           grammar.extraDefinitions,
           production,
+          producedBy: className,
         );
         if (shouldCreateHelperClasses) {
           final firstTokenName =
