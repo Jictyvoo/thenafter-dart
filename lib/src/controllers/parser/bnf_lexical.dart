@@ -202,24 +202,33 @@ class BNFLexical {
     }
   }
 
+  void _mainLoop(int previousCharacter, int character) {
+    _lexicalInformation.column += 1;
+    _processCharacter(character, previousCharacter);
+    // In case line break was given with both end-line types ('\r\n'),
+    // it'll subtract the counter
+    if (StringHelper.isCRLF(previousCharacter, character)) {
+      _lexicalInformation.lineNumber -= 1;
+    }
+    if (StringHelper.isNewline(character)) {
+      _lexicalInformation.lineNumber += 1;
+      _lexicalInformation.column = 0;
+    }
+  }
+
+  /// Clear all attributes
+  void clear() {
+    tokenList.clear();
+    errorList.clear();
+    _lexicalInformation.clear();
+  }
+
   /// Starts the parse using a iterator as input.
   /// At the end, returns all tokens identified
   List<Token> start(InputIterator input) {
     var previousCharacter = 0;
     for (final character in input) {
-      _lexicalInformation.column += 1;
-      _processCharacter(character, previousCharacter);
-      // In case line break was given with both end-line types ('\r\n'),
-      // it'll subtract the counter
-      if (StringHelper.isCRLF(previousCharacter, character)) {
-        _lexicalInformation.lineNumber -= 1;
-      }
-      if (StringHelper.isNewline(character)) {
-        _lexicalInformation.lineNumber += 1;
-        _lexicalInformation.column = 0;
-        previousCharacter = 0;
-      }
-
+      _mainLoop(previousCharacter, character);
       previousCharacter = character;
     }
 
@@ -228,12 +237,5 @@ class BNFLexical {
       _processCharacter(CHAR_LINE_FEED, previousCharacter);
     }
     return tokenList;
-  }
-
-  /// Clear all attributes
-  void clear() {
-    tokenList.clear();
-    errorList.clear();
-    _lexicalInformation.clear();
   }
 }

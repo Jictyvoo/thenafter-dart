@@ -16,11 +16,9 @@ enum SyntacticState {
 
 /// The default syntactic analyzer for a BNF grammar
 class BNFSyntactic {
-  /// List of all productions
-  final ProductionsMap productions;
+  final ProductionsMap _productions;
 
-  /// List of all extra definitions
-  final Map<String, String> extraDefinitions;
+  final Map<String, String> _extraDefinitions;
 
   /// The current state of the parser
   SyntacticState _state;
@@ -33,26 +31,33 @@ class BNFSyntactic {
   BNFSyntactic()
       : _state = SyntacticState.nil,
         _leftSideToken = Token.empty,
-        extraDefinitions = <String, String>{},
-        productions = <String, List<List<Token>>>{};
+        _extraDefinitions = <String, String>{},
+        _productions = <String, List<List<Token>>>{};
+
+  /// List of all productions
+  ProductionsMap get productions => ProductionsMap.from(_productions);
+
+  /// List of all extra definitions
+  Map<String, String> get extraDefinitions =>
+      Map<String, String>.from(_extraDefinitions);
 
   void _attributionState(Token token) {
     final key = StringHelper.removeQuotes(_leftSideToken.lexeme);
     final value = StringHelper.removeQuotes(token.lexeme);
-    extraDefinitions[key] = value;
+    _extraDefinitions[key] = value;
     _state = SyntacticState.nil;
   }
 
   bool get _hasSubProduction {
-    return productions.containsKey(_leftSideToken.lexeme);
+    return _productions.containsKey(_leftSideToken.lexeme);
   }
 
   /// Return the current production list that is used
   SubProductionsList get currentProductionList {
     final productionList =
-        productions[_leftSideToken.lexeme] ?? <List<Token>>[];
+        _productions[_leftSideToken.lexeme] ?? <List<Token>>[];
     if (!_hasSubProduction) {
-      productions[_leftSideToken.lexeme] = productionList;
+      _productions[_leftSideToken.lexeme] = productionList;
     }
     return productionList;
   }
@@ -122,6 +127,14 @@ class BNFSyntactic {
         _state = SyntacticState.openedProduction;
       }
     }
+  }
+
+  /// Cleanup all elements
+  void clear() {
+    _state = SyntacticState.nil;
+    _leftSideToken = Token.empty;
+    _productions.clear();
+    _extraDefinitions.clear();
   }
 
   /// Start parsing a token list and organize it's information
