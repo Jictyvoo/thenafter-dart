@@ -194,17 +194,21 @@ class BNFLexical {
     }
   }
 
+  void _processCharacter(int character, int previousCharacter) {
+    if (_lexicalInformation.state == LexicalStates.nil) {
+      _discoverState(character);
+    } else {
+      _delegateState(character, previousCharacter);
+    }
+  }
+
   /// Starts the parse using a iterator as input.
   /// At the end, returns all tokens identified
   List<Token> start(InputIterator input) {
     var previousCharacter = 0;
     for (final character in input) {
       _lexicalInformation.column += 1;
-      if (_lexicalInformation.state == LexicalStates.nil) {
-        _discoverState(character);
-      } else {
-        _delegateState(character, previousCharacter);
-      }
+      _processCharacter(character, previousCharacter);
       // In case line break was given with both end-line types ('\r\n'),
       // it'll subtract the counter
       if (StringHelper.isCRLF(previousCharacter, character)) {
@@ -217,6 +221,11 @@ class BNFLexical {
       }
 
       previousCharacter = character;
+    }
+
+    // In case input end before finishing the token, force it to finish
+    if (_lexicalInformation.isBuildingToken) {
+      _processCharacter(CHAR_LINE_FEED, previousCharacter);
     }
     return tokenList;
   }

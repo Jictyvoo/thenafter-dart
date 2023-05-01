@@ -61,6 +61,9 @@ class LexicalInformation {
         lineNumber = 1,
         column = 1;
 
+  /// Informs if have a token that was not finished yet
+  bool get isBuildingToken => _lexemeBuilder.isNotEmpty;
+
   /// Clear all information stored
   void clear() {
     column = 1;

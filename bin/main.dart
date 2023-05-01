@@ -60,9 +60,9 @@ void main(List<String> args) {
     if (!fileName.endsWith('.grm')) {
       continue;
     }
-    final byteLines = File(fileName).readAsBytesSync();
+    final byteLines = File(fileName).readAsStringSync();
     final startTime = DateTime.now();
-    final parseResult = BNFParser().call(byteLines);
+    final parseResult = BNFParser().call(byteLines.codeUnits);
     final result = FirstFollow().call(
       parseResult.productions,
       parseResult.startSymbol.lexeme,
