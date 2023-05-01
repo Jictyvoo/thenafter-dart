@@ -1,19 +1,20 @@
-import 'package:thenafter_dart/src/controllers/generators/abstract_generator.dart';
+import 'package:thenafter_dart/src/controllers/generators/code_language/abstract_generator.dart';
 import 'package:thenafter_dart/src/models/code_generator_interface.dart';
 import 'package:thenafter_dart/src/models/value/first_follow_result.dart';
 import 'package:thenafter_dart/src/models/value/grammar_information.dart';
 import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
-/// The code generator that outputs a code using dart constraints
-class DartGenerator extends AbstractCodeGenerator
+/// The code generator that outputs a code using lua constraints
+class PythonGenerator extends AbstractCodeGenerator
     implements CodeGeneratorInterface {
   String _buildClassDeclaration() {
-    return 'abstract class GrammarDefinition {\n';
+    return 'class GrammarDefinition:\n'
+        '\tdef __init__(self):\n';
   }
 
   String _buildClassEnd() {
-    return '\n}\n';
+    return '\n\n';
   }
 
   void _buildMapSet(
@@ -27,24 +28,23 @@ class DartGenerator extends AbstractCodeGenerator
       if (index > 0) {
         buffer.write(',\n');
       }
-      buffer.write("\t\t'${entry.key}': {\n");
+      buffer.write('\t\t\t"${entry.key}": {\n');
       // Sub-productions foreach
       var subIndex = 0;
       for (final subProductions in entry.value) {
         if (subIndex > 0) {
           buffer.write(',\n');
         }
-        final sanitized = sanitizeTerminal(subProductions, true);
-        buffer.write('\t\t\t${replaceQuote(
-          sanitized == "'\$'" ? "'\\\$'" : sanitized,
-          CHAR_SINGLE_QUOTE,
+        buffer.write('\t\t\t\t${replaceQuote(
+          sanitizeTerminal(subProductions, true),
+          CHAR_QUOTES,
         )}');
         subIndex += 1;
       }
-      buffer.write('\n\t\t}');
+      buffer.write('\n\t\t\t}');
       index += 1;
     }
-    buffer.write('\n\t}');
+    buffer.write('\n\t\t}');
   }
 
   void _buildMapProductions(
@@ -52,13 +52,13 @@ class DartGenerator extends AbstractCodeGenerator
     ProductionsMap productionSet,
   ) {
     var index = 0;
-    buffer.write('\tstatic const productions = {\n');
+    buffer.write('{\n');
 
     for (final entry in productionSet.entries) {
       if (index > 0) {
         buffer.write(',\n');
       }
-      buffer.write("\t\t'${entry.key}' : [\n");
+      buffer.write('\t\t"${entry.key}": [\n');
       // Sub-productions foreach
       var subIndex = 0;
       for (final subProductions in entry.value) {
@@ -94,18 +94,17 @@ class DartGenerator extends AbstractCodeGenerator
 
     for (final entry in grammarData.extraDefinitions.entries) {
       buffer.write(
-        '\tstatic const ${sanitizeName(entry.key)} = ${stringifyTerminal(entry.value, CHAR_SINGLE_QUOTE)};\n',
+        '\t\tself.${sanitizeName(entry.key)} = ${stringifyTerminal(entry.value, CHAR_QUOTES)},\n',
       );
     }
 
-    _buildMapSet('\tstatic const firstSet', buffer, firstFollow.firstList);
-    buffer.write(';\n');
-    _buildMapSet('\tstatic const followSet', buffer, firstFollow.followList);
+    _buildMapSet('\t\tself.firstSet', buffer, firstFollow.firstList);
+    buffer.write(',\n');
+    _buildMapSet('\t\tself.followSet', buffer, firstFollow.followList);
     if (!generateProductions) {
-      buffer.write(';\n');
+      buffer.write(',\n\t\tself.productions = ');
       _buildMapProductions(buffer, grammarData.productions);
     }
-    buffer.write(';');
 
     buffer.write(_buildClassEnd());
   }

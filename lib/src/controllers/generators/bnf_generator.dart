@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:thenafter_dart/src/controllers/generators/abstract_generator.dart';
+import 'package:thenafter_dart/src/controllers/generators/code_language/abstract_generator.dart';
 import 'package:thenafter_dart/src/models/value/grammar_information.dart';
 import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';

@@ -1,15 +1,15 @@
-import 'package:thenafter_dart/src/controllers/generators/abstract_generator.dart';
+import 'package:thenafter_dart/src/controllers/generators/code_language/abstract_generator.dart';
 import 'package:thenafter_dart/src/models/code_generator_interface.dart';
 import 'package:thenafter_dart/src/models/value/first_follow_result.dart';
 import 'package:thenafter_dart/src/models/value/grammar_information.dart';
 import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
-/// The code generator that outputs a code using lua constraints
-class LuaGenerator extends AbstractCodeGenerator
+/// The code generator that outputs a code using dart constraints
+class DartGenerator extends AbstractCodeGenerator
     implements CodeGeneratorInterface {
   String _buildClassDeclaration() {
-    return 'return {\n';
+    return 'abstract class GrammarDefinition {\n';
   }
 
   String _buildClassEnd() {
@@ -27,16 +27,17 @@ class LuaGenerator extends AbstractCodeGenerator
       if (index > 0) {
         buffer.write(',\n');
       }
-      buffer.write('\t\t["${entry.key}"] = {\n');
+      buffer.write("\t\t'${entry.key}': {\n");
       // Sub-productions foreach
       var subIndex = 0;
       for (final subProductions in entry.value) {
         if (subIndex > 0) {
           buffer.write(',\n');
         }
+        final sanitized = sanitizeTerminal(subProductions, true);
         buffer.write('\t\t\t${replaceQuote(
-          sanitizeTerminal(subProductions, true),
-          CHAR_QUOTES,
+          sanitized == "'\$'" ? "'\\\$'" : sanitized,
+          CHAR_SINGLE_QUOTE,
         )}');
         subIndex += 1;
       }
@@ -51,32 +52,32 @@ class LuaGenerator extends AbstractCodeGenerator
     ProductionsMap productionSet,
   ) {
     var index = 0;
-    buffer.write('\tproductions = {\n');
+    buffer.write('\tstatic const productions = {\n');
 
     for (final entry in productionSet.entries) {
       if (index > 0) {
         buffer.write(',\n');
       }
-      buffer.write('\t\t["${entry.key}"] = {\n');
+      buffer.write("\t\t'${entry.key}' : [\n");
       // Sub-productions foreach
       var subIndex = 0;
       for (final subProductions in entry.value) {
         if (subIndex > 0) {
           buffer.write(',\n');
         }
-        buffer.write('\t\t\t{');
+        buffer.write('\t\t\t[');
         var counter = 0;
         for (final singleProduction in subProductions) {
           if (counter > 0) {
             buffer.write(', ');
           }
-          buffer.write('"${singleProduction.lexeme}"');
+          buffer.write(sanitizeTerminal(singleProduction.lexeme, true));
           counter += 1;
         }
-        buffer.write('}');
+        buffer.write(']');
         subIndex += 1;
       }
-      buffer.write('\n\t\t}');
+      buffer.write('\n\t\t]');
       index += 1;
     }
     buffer.write('\n\t}');
@@ -93,17 +94,18 @@ class LuaGenerator extends AbstractCodeGenerator
 
     for (final entry in grammarData.extraDefinitions.entries) {
       buffer.write(
-        '\t${sanitizeName(entry.key)} = ${stringifyTerminal(entry.value, CHAR_QUOTES)},\n',
+        '\tstatic const ${sanitizeName(entry.key)} = ${stringifyTerminal(entry.value, CHAR_SINGLE_QUOTE)};\n',
       );
     }
 
-    _buildMapSet('\tfirstSet', buffer, firstFollow.firstList);
-    buffer.write(',\n');
-    _buildMapSet('\tfollowSet', buffer, firstFollow.followList);
+    _buildMapSet('\tstatic const firstSet', buffer, firstFollow.firstList);
+    buffer.write(';\n');
+    _buildMapSet('\tstatic const followSet', buffer, firstFollow.followList);
     if (!generateProductions) {
-      buffer.write(',\n');
+      buffer.write(';\n');
       _buildMapProductions(buffer, grammarData.productions);
     }
+    buffer.write(';');
 
     buffer.write(_buildClassEnd());
   }

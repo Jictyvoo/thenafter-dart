@@ -1,6 +1,6 @@
 library synthatic_productions_code_gen;
 
-import 'package:thenafter_dart/src/controllers/generators/abstract_generator.dart';
+import 'package:thenafter_dart/src/controllers/generators/code_language/abstract_generator.dart';
 import 'package:thenafter_dart/src/models/code_generator_interface.dart';
 import 'package:thenafter_dart/src/models/value/token.dart';
 import 'package:thenafter_dart/src/util/helpers/string_helper.dart';

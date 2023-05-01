@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:thenafter_dart/src/controllers/generators/code_language/dart_generator.dart';
-import 'package:thenafter_dart/src/controllers/generators/syntactic_tree/syntactic_tree.dart';
+import 'package:thenafter_dart/src/controllers/generators/syntactic_tree.dart';
 import 'package:thenafter_dart/thenafter_dart.dart';
 
 import 'generator_cmd.dart' show stringToLanguage;
