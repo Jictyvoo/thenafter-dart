@@ -9,7 +9,7 @@ abstract class StringHelper {
 
   /// Remove quotes from the string that are in the start and the end
   static String removeQuotes(String target) {
-    if(target.isEmpty) {
+    if (target.isEmpty) {
       return target;
     }
     final lastCharacter = target.codeUnitAt(target.length - 1);
@@ -68,6 +68,11 @@ abstract class StringHelper {
   /// Checks if the given rune represents a upper or lower case character
   static bool isAlphabetic(int rune) {
     return isLower(rune) || isUpper(rune);
+  }
+
+  /// Checks if the given rune is a number or a upper/lower case character
+  static bool isAlphanumeric(int rune) {
+    return isNumber(rune) || isAlphabetic(rune);
   }
 
   /// Checks if the given rune represents a underline

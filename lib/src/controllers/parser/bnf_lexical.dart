@@ -114,9 +114,8 @@ class BNFLexical {
   }
 
   void _identifierState(int character) {
-    if (StringHelper.isAlphabetic(character) ||
-        StringHelper.isUnderline(character) ||
-        StringHelper.isNumber(character)) {
+    if (StringHelper.isAlphanumeric(character) ||
+        StringHelper.isUnderline(character)) {
       _lexicalInformation.addCharacter(character);
     } else {
       tokenList.add(
