@@ -80,6 +80,7 @@ mixin AbstractSanitizer {
   String normalizeIdentifier(
     final String identifier, {
     final IdentifierFormat format = IdentifierFormat.camelCase,
+    final String Function(String)? unknownCharacterFallback,
   }) {
     final buffer = StringBuffer();
     var index = 0;
@@ -92,6 +93,7 @@ mixin AbstractSanitizer {
         continue;
       }
       if (StringHelper.isWhitespace(character) ||
+          StringHelper.isNewline(character) ||
           StringHelper.isHyphen(character) ||
           StringHelper.isUnderline(character)) {
         if (format == IdentifierFormat.pascalCase ||
@@ -104,15 +106,23 @@ mixin AbstractSanitizer {
         continue;
       }
 
+      // Start to add the characters on buffer
       if (addUnderscore) {
         buffer.write('_');
         addUnderscore = false;
       }
-      if (index == upperCaseAtIndex) {
+
+      if (!StringHelper.isAlphanumeric(character) &&
+          unknownCharacterFallback != null) {
+        buffer.write(
+          unknownCharacterFallback(String.fromCharCode(character)),
+        );
+      } else if (index == upperCaseAtIndex) {
         buffer.write(String.fromCharCode(character).toUpperCase());
       } else {
         buffer.writeCharCode(character);
       }
+
       index += 1;
     }
 
