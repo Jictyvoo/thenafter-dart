@@ -21,7 +21,7 @@ class _TestNormalizeIdentifierCase {
   });
 
   void runTest() {
-    final testName = 'normalizeIdentifier `${format.name}'
+    final testName = 'normalizeIdentifier `(${format.name}){$input}'
         '${unknownCharCallback == null ? "" : unknownCharCallback.toString()}`';
     test(testName, () {
       expect(
@@ -63,6 +63,11 @@ void main() {
     _TestNormalizeIdentifierCase(
       input: 'this\r\n_is-a_Test_--\t\t\t--identifier',
       output: 'ThisIsATestIdentifier',
+      format: IdentifierFormat.pascalCase,
+    ),
+    _TestNormalizeIdentifierCase(
+      input: '0\tidentifier_number \nQ\t',
+      output: '_0IdentifierNumberQ',
       format: IdentifierFormat.pascalCase,
     ),
     _TestNormalizeIdentifierCase(

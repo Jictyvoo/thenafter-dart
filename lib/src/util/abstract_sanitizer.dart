@@ -87,10 +87,28 @@ mixin AbstractSanitizer {
     var upperCaseAtIndex = format == IdentifierFormat.pascalCase ? 0 : -1;
     var addUnderscore = false;
     for (final character in identifier.codeUnits) {
-      if (index == 0 && format == IdentifierFormat.camelCase) {
-        buffer.write(String.fromCharCode(character).toLowerCase());
-        index += 1;
-        continue;
+      if (buffer.isEmpty) {
+        if (StringHelper.isAlphabetic(character)) {
+          var toAdd = String.fromCharCode(character);
+          if (format == IdentifierFormat.camelCase &&
+              StringHelper.isUpper(character)) {
+            toAdd = toAdd.toLowerCase();
+          } else if (format == IdentifierFormat.pascalCase &&
+              StringHelper.isLower(character)) {
+            toAdd = toAdd.toUpperCase();
+          }
+          buffer.write(toAdd);
+        } else if (StringHelper.isNumber(character)) {
+          buffer
+            ..write('_')
+            ..writeCharCode(character);
+        }
+
+        // Skip if buffer was written
+        if (buffer.isNotEmpty) {
+          index += 1;
+          continue;
+        }
       }
       if (StringHelper.isWhitespace(character) ||
           StringHelper.isNewline(character) ||
