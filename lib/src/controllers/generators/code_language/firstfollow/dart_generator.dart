@@ -94,7 +94,7 @@ class DartGenerator extends AbstractCodeGenerator
 
     for (final entry in grammarData.extraDefinitions.entries) {
       buffer.write(
-        '\tstatic const ${sanitizeName(entry.key)} = ${stringifyTerminal(entry.value, CHAR_SINGLE_QUOTE)};\n',
+        '\tstatic const ${sanitizeName(entry.key)} = ${stringify(entry.value, CHAR_SINGLE_QUOTE)};\n',
       );
     }
 

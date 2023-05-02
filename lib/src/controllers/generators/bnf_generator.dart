@@ -50,11 +50,11 @@ class BNFGrammarGenerator extends AbstractCodeGenerator {
 
   void _writeHeader(StringBuffer buffer, GrammarInformation grammarData) {
     final headerMap = {
-      '"Name"': stringifyTerminal(grammarData.name, CHAR_SINGLE_QUOTE),
-      '"Author"': stringifyTerminal(grammarData.author, CHAR_SINGLE_QUOTE),
-      '"Version"': stringifyTerminal(grammarData.version, CHAR_SINGLE_QUOTE),
-      '"About"': stringifyTerminal(grammarData.about, CHAR_SINGLE_QUOTE),
-      '"Case Sensitive"': stringifyTerminal(
+      '"Name"': stringify(grammarData.name, CHAR_SINGLE_QUOTE),
+      '"Author"': stringify(grammarData.author, CHAR_SINGLE_QUOTE),
+      '"Version"': stringify(grammarData.version, CHAR_SINGLE_QUOTE),
+      '"About"': stringify(grammarData.about, CHAR_SINGLE_QUOTE),
+      '"Case Sensitive"': stringify(
         grammarData.caseSensitive.toString(),
         CHAR_SINGLE_QUOTE,
       ),

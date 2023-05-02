@@ -93,7 +93,7 @@ class LuaGenerator extends AbstractCodeGenerator
 
     for (final entry in grammarData.extraDefinitions.entries) {
       buffer.write(
-        '\t${sanitizeName(entry.key)} = ${stringifyTerminal(entry.value, CHAR_QUOTES)},\n',
+        '\t${sanitizeName(entry.key)} = ${stringify(entry.value, CHAR_QUOTES)},\n',
       );
     }
 

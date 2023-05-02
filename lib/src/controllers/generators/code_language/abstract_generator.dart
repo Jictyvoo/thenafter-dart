@@ -55,7 +55,7 @@ abstract class AbstractCodeGenerator extends AbstractAnalyzer {
 
   /// Converts a terminal into a string, making possible to convert
   /// escape characters and quotes, so it will generate a valid string
-  String stringifyTerminal(
+  String stringify(
     String original, [
     int quoteType = CHAR_SINGLE_QUOTE,
   ]) {

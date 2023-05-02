@@ -94,7 +94,7 @@ class PythonGenerator extends AbstractCodeGenerator
 
     for (final entry in grammarData.extraDefinitions.entries) {
       buffer.write(
-        '\t\tself.${sanitizeName(entry.key)} = ${stringifyTerminal(entry.value, CHAR_QUOTES)},\n',
+        '\t\tself.${sanitizeName(entry.key)} = ${stringify(entry.value, CHAR_QUOTES)},\n',
       );
     }
 
