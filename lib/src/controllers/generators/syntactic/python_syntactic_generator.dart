@@ -3,12 +3,21 @@ library synthatic_productions_code_gen;
 import 'package:thenafter_dart/src/controllers/generators/code_language/abstract_generator.dart';
 import 'package:thenafter_dart/src/models/code_generator_interface.dart';
 import 'package:thenafter_dart/src/models/value/token.dart';
+import 'package:thenafter_dart/src/util/abstract_sanitizer.dart';
 import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
 /// A PythonCodeGenerator.
 class SyntacticPythonGenerator extends AbstractCodeGenerator
     implements SyntacticGeneratorInterface {
+  /// Sanitize a name to be in correct way to be used as an identifier
+  String sanitizeName(String productionName) {
+    return normalizeIdentifier(
+      productionName,
+      format: IdentifierFormat.snakeCase,
+    );
+  }
+
   @override
   void buildNeededImports(StringBuffer buffer) {
     buffer.writeln('from collections import Callable\n');

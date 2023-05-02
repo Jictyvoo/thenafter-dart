@@ -2,12 +2,21 @@ import 'package:thenafter_dart/src/controllers/generators/code_language/abstract
 import 'package:thenafter_dart/src/models/code_generator_interface.dart';
 import 'package:thenafter_dart/src/models/value/first_follow_result.dart';
 import 'package:thenafter_dart/src/models/value/grammar_information.dart';
+import 'package:thenafter_dart/src/util/abstract_sanitizer.dart';
 import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
 /// The code generator that outputs a code using lua constraints
 class PythonGenerator extends AbstractCodeGenerator
     implements CodeGeneratorInterface {
+  /// Sanitize a name to be in correct way to be used as an identifier
+  String sanitizeName(String productionName) {
+    return normalizeIdentifier(
+      productionName,
+      format: IdentifierFormat.snakeCase,
+    );
+  }
+
   String _buildClassDeclaration() {
     return 'class GrammarDefinition:\n'
         '\tdef __init__(self):\n';
@@ -98,9 +107,9 @@ class PythonGenerator extends AbstractCodeGenerator
       );
     }
 
-    _buildMapSet('\t\tself.firstSet', buffer, firstFollow.firstList);
+    _buildMapSet('\t\tself.first_set', buffer, firstFollow.firstList);
     buffer.write(',\n');
-    _buildMapSet('\t\tself.followSet', buffer, firstFollow.followList);
+    _buildMapSet('\t\tself.follow_set', buffer, firstFollow.followList);
     if (!generateProductions) {
       buffer.write(',\n\t\tself.productions = ');
       _buildMapProductions(buffer, grammarData.productions);

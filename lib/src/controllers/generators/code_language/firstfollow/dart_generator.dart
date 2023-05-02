@@ -2,12 +2,21 @@ import 'package:thenafter_dart/src/controllers/generators/code_language/abstract
 import 'package:thenafter_dart/src/models/code_generator_interface.dart';
 import 'package:thenafter_dart/src/models/value/first_follow_result.dart';
 import 'package:thenafter_dart/src/models/value/grammar_information.dart';
+import 'package:thenafter_dart/src/util/abstract_sanitizer.dart';
 import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
 /// The code generator that outputs a code using dart constraints
 class DartGenerator extends AbstractCodeGenerator
     implements CodeGeneratorInterface {
+  /// Sanitize a name to be in correct way to be used as an identifier
+  String sanitizeName(String productionName) {
+    return normalizeIdentifier(
+      productionName,
+      format: IdentifierFormat.camelCase,
+    );
+  }
+
   String _buildClassDeclaration() {
     return 'abstract class GrammarDefinition {\n';
   }
