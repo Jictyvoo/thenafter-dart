@@ -3,6 +3,9 @@ import 'package:thenafter_dart/src/util/abstract_sanitizer.dart';
 /// Abstract class that provides default methods to help dealing with
 /// the BNF grammar analysis
 abstract class AbstractAnalyzer with AbstractSanitizer {
+  /// Default empty const constructor
+  const AbstractAnalyzer();
+
   /// Check whether a string represents a production `<PRODUCTION>` or not
   bool isProduction(String toTest) {
     return toTest.startsWith('<') && toTest.endsWith('>');
