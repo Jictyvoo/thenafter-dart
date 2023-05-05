@@ -61,7 +61,7 @@ class Token {
 
   @override
   String toString() {
-    return '$lineNumber:$columnNumber `$lexeme` <$tokenType>';
+    return '$lineNumber:$columnNumber `$lexeme` <${tokenType.name}>';
   }
 
   @override

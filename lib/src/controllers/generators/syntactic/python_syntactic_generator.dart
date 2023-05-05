@@ -4,12 +4,30 @@ import 'package:thenafter_dart/src/controllers/generators/code_language/abstract
 import 'package:thenafter_dart/src/models/code_generator_interface.dart';
 import 'package:thenafter_dart/src/models/value/token.dart';
 import 'package:thenafter_dart/src/util/abstract_sanitizer.dart';
+import 'package:thenafter_dart/src/util/helpers/string_constants.dart';
 import 'package:thenafter_dart/src/util/helpers/string_helper.dart';
 import 'package:thenafter_dart/src/util/types_util.dart';
 
 /// A PythonCodeGenerator.
 class SyntacticPythonGenerator extends AbstractCodeGenerator
     implements SyntacticGeneratorInterface {
+
+  String _sanitizeProductionName(final String name) {
+    final buffer = StringBuffer();
+    var index = 0;
+    for (final character in name.codeUnits) {
+      final isOpen = index == 0 && character == CHAR_LESS_THAN;
+      final isClose =
+          index == name.length - 1 && character == CHAR_GREATER_THAN;
+      index += 1;
+      if (isOpen || isClose) {
+        continue;
+      }
+      buffer.writeCharCode(character);
+    }
+
+    return buffer.toString();
+  }
   /// Sanitize a name to be in correct way to be used as an identifier
   String sanitizeName(String productionName) {
     return normalizeIdentifier(
@@ -20,27 +38,27 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
 
   @override
   void buildNeededImports(StringBuffer buffer) {
-    buffer.writeln('from collections import Callable\n');
+    buffer.writeln('from typing import Callable\n');
     buffer.writeln('from models.business.sythatic_node import SynthaticNode');
     buffer.writeln(
       'from models.errors.synthatic_errors import SynthaticParseErrors',
     );
     buffer.writeln('from util.data_structure.queue import Queue');
-    buffer.writeln('from util.productions import EProduction');
+    buffer.writeln('from util.productions import GrammarDefinition');
     buffer.writeln('from util.token_types import TokenTypes\n');
   }
 
   /// Generates a custom types needed by the generated code
   void buildTypeDeclarations(StringBuffer buffer) {
     buffer.writeln(
-      'productions_functions: dict[EProduction, '
+      'productions_functions: dict[GrammarDefinition, '
       'Callable[[Queue, list[SynthaticParseErrors]], SynthaticNode]]',
     );
   }
 
   @override
   String genFunctionName(String productionName) {
-    return 'sp_${sanitizeName(productionName)}';
+    return 'sp_${sanitizeName(_sanitizeProductionName(productionName))}';
   }
 
   @override
@@ -92,7 +110,7 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
     for (var index = 1; index < productionsList.length; index++) {
       final production = productionsList[index];
       final subIsProduction = production.tokenType == TokenType.production;
-      final firstSet = firsts[production] ?? <String>{};
+      final firstSet = firsts[production.lexeme] ?? <String>{};
       final tabsPlus = <String>[
         StringHelper.multiplyString('\t', amountTabs),
         StringHelper.multiplyString('\t', amountTabs + 1),
@@ -138,7 +156,7 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
           );
         } else {
           buffer.writeln(
-            '.get_lexeme() == ${sanitizeTerminal(production.lexeme)}:',
+            '.get_lexeme() == ${sanitizeTerminal(production.lexeme, true)}:',
           );
         }
         buffer.writeln('${tabsPlus[1]}node.add(token_queue.remove())');
@@ -146,7 +164,7 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
 
       // In case failed the predict, add error to list
       if (!firstSet.contains(emptyEpsilon)) {
-        var expectedTokens = '[${sanitizeTerminal(production.lexeme)}]';
+        var expectedTokens = '[${sanitizeTerminal(production.lexeme, true)}]';
         if (subIsProduction) {
           expectedTokens = localFirstSetName;
         }
@@ -195,7 +213,7 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
       final production = productions[index];
       final firstProduction = production[0];
       buffer.writeln('\t# Predicting for production ${production.toString()}');
-      final firstSet = firsts[firstProduction] ?? <String>{};
+      final firstSet = firsts[firstProduction.lexeme] ?? <String>{};
       final tokenTypesVerification = buildVerifyTokenTypes(
         firstSet,
         givenInformation,
@@ -223,13 +241,13 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
         buffer.writeln('\t\t\tnode.add(temp)');
       } else if (firstProduction.lexeme.isNotEmpty) {
         buffer.write('if token_queue.peek() and token_queue.peek()');
-        if (givenInformation.containsKey(firstProduction)) {
+        if (givenInformation.containsKey(firstProduction.lexeme)) {
           buffer.writeln(
-            '.get_token_type() == ${givenInformation[firstProduction]}:',
+            '.get_token_type() == ${givenInformation[firstProduction.lexeme]}:',
           );
         } else {
           buffer.writeln(
-            '.get_lexeme() == ${sanitizeTerminal(firstProduction.lexeme)}:',
+            '.get_lexeme() == ${sanitizeTerminal(firstProduction.lexeme, true)}:',
           );
         }
         buffer.writeln('\t\tnode.add(token_queue.remove())');
