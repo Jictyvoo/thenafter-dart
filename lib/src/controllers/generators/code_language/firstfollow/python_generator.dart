@@ -23,7 +23,7 @@ class PythonGenerator extends AbstractCodeGenerator
   }
 
   String _buildClassEnd() {
-    return '\n\n';
+    return '';
   }
 
   void _buildMapSet(
@@ -92,6 +92,17 @@ class PythonGenerator extends AbstractCodeGenerator
     buffer.write('\n\t}');
   }
 
+  void _buildGetters(String funcName, String varName, StringBuffer buffer) {
+    buffer.writeln(
+      '\n\n'
+      '\tdef $funcName(self, production_name: str) -> set[str]:'
+      '\n\t\tresult = self.$varName[production_name]'
+      '\n\t\tif result is None:'
+      '\n\t\t\tresult = {}'
+      '\n\t\treturn result',
+    );
+  }
+
   @override
   void generate(
     StringBuffer buffer,
@@ -103,17 +114,20 @@ class PythonGenerator extends AbstractCodeGenerator
 
     for (final entry in grammarData.extraDefinitions.entries) {
       buffer.write(
-        '\t\tself.${sanitizeName(entry.key)} = ${stringify(entry.value, CHAR_QUOTES)},\n',
+        '\t\tself.${sanitizeName(entry.key)} = ${stringify(entry.value, CHAR_QUOTES)}\n',
       );
     }
 
-    _buildMapSet('\t\tself.first_set', buffer, firstFollow.firstList);
-    buffer.write(',\n');
-    _buildMapSet('\t\tself.follow_set', buffer, firstFollow.followList);
+    _buildMapSet('\t\tself._first_set', buffer, firstFollow.firstList);
+    buffer.write('\n');
+    _buildMapSet('\t\tself._follow_set', buffer, firstFollow.followList);
     if (!generateProductions) {
-      buffer.write(',\n\t\tself.productions = ');
+      buffer.write('\n\t\tself.productions = ');
       _buildMapProductions(buffer, grammarData.productions);
     }
+
+    _buildGetters('first', '_first_set', buffer);
+    _buildGetters('follow', '_follow_set', buffer);
 
     buffer.write(_buildClassEnd());
   }

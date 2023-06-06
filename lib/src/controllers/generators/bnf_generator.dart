@@ -22,7 +22,7 @@ class BNFGrammarGenerator extends AbstractCodeGenerator {
       var subIndex = 0;
       for (final subProductions in entry.value) {
         if (subIndex > 0) {
-          buffer.write(' |\n');
+          buffer.write(' |\n\t');
         }
         var counter = 0;
         for (final singleProduction in subProductions) {

@@ -116,15 +116,8 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
         StringHelper.multiplyString('\t', amountTabs + 1),
         StringHelper.multiplyString('\t', amountTabs + 2),
       ];
-      const localFirstSetName = 'local_first_set';
       if (subIsProduction) {
         buffer.writeln('${tabsPlus[0]}# Predicting for production $production');
-        buffer.writeln(
-          '${tabsPlus[0]}$localFirstSetName = ${listTerminalToString(
-            firstSet,
-            excluded: excludedTerminals,
-          )}',
-        );
         final tokenTypesVerification = buildVerifyTokenTypes(
           firstSet,
           givenInformation,
@@ -140,7 +133,7 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
           );
         }
         buffer.writeln(
-          '${tabsPlus[0]}if token_queue.peek() and token_queue.peek().get_lexeme() in $localFirstSetName$tokenTypesCondition:',
+          '${tabsPlus[0]}if token_queue.peek() and token_queue.peek().get_lexeme() in GrammarDefinition().first(\'${production.lexeme}\')$tokenTypesCondition:',
         );
         buffer.writeln(
           '${tabsPlus[1]}temp = ${genFunctionName(production.lexeme)}(token_queue, error_list)',
@@ -166,7 +159,7 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
       if (!firstSet.contains(emptyEpsilon)) {
         var expectedTokens = '[${sanitizeTerminal(production.lexeme, true)}]';
         if (subIsProduction) {
-          expectedTokens = localFirstSetName;
+          expectedTokens = 'list(GrammarDefinition().first(\'${production.lexeme}\'))';
         }
         buffer.writeln(
           '\t\telse:\n\t\t\terror_list.append('
@@ -229,10 +222,7 @@ class SyntacticPythonGenerator extends AbstractCodeGenerator
       }
       if (firstProduction.tokenType == TokenType.production) {
         buffer.writeln(
-          'if token_queue.peek() and token_queue.peek().get_lexeme() in ${listTerminalToString(
-            firstSet,
-            excluded: excludedTerminals,
-          )}$tokenTypesCondition:',
+          'if token_queue.peek() and token_queue.peek().get_lexeme() in GrammarDefinition().first(\'${firstProduction.lexeme}\')$tokenTypesCondition:',
         );
         buffer.writeln(
           '\t\ttemp = ${genFunctionName(firstProduction.lexeme)}(token_queue, error_list)',
